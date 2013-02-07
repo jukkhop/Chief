@@ -1,76 +1,189 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Chief by virtuesoftworks</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Chief</h1>
-        <p>Chief PHP Framework</p>
-
-        <p class="view"><a href="https://github.com/virtuesoftworks/chief">View the Project on GitHub <small>virtuesoftworks/chief</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/virtuesoftworks/chief/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/virtuesoftworks/chief/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/virtuesoftworks/chief">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/virtuesoftworks">virtuesoftworks</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-34897003-3");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
-  </body>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chief PHP Framework</title>
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400|Titillium+Web:400,900,700' rel='stylesheet' type='text/css'>
+	<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+	<link href="assets/css/prettify.css" rel="stylesheet">
+	<link href="assets/css/screen.css" rel="stylesheet">
+	<link href="assets/css/index.css" rel="stylesheet">
+</head>
+<body onload="prettyPrint()">
+	<header>
+		<div class="container">
+			<h1>Chief</h1>
+			<h2>A PHP Framework</h2>
+			<p class="lead">
+				Chief is a PHP framework that makes you create apps faster without constant hand holding.
+				By utilizing the latest PHP has to offer and adding an excellent set of essential tools
+				at your disposal, Chief will make you fall in love with PHP once again.
+			</p>
+			<p>
+				<a class="btn btn-primary btn-large btn-success" href="#">Download Chief</a>
+			</p>
+			<ul class="header-links">
+				<li><a href="#">GitHub project</a></li>
+				<li><a href="docs.html">Documentation</a></li>
+				<li>Version 1.0</li>
+			</ul>
+		</div>
+	</header>
+	<div class="container content">
+		<h1 class="things">Things that make Chief awesome</h1>
+		<div class="row">
+			<div class="span6">
+				<h3>It's so easy</h3>
+				<p>With just under 20 files, Chief is stripped of all
+				superfluous content that you probably wouldn't use
+				anyways. A simple set of commands and guidelines
+				are enough to make your life easier.</p>
+				<p>Creating your app is intuitive and fast. The file
+				structure is simple: everything you create is a module.
+				A module has a controller, and it can contain multiple views
+				and models. In addition to modules, Chief stores the important
+				stuff in <code>system/</code>, plugins in <code>plugins/</code>
+				and your layout in <code>layout/</code>.</p>
+				<p>
+					Chief includes an install script that creates the
+					required database structure for you. Installing takes
+					under a minute, from clicking the Download button above
+					to being greeted by a lovely Hello World message.
+				</p>
+				<hr class="soften">
+				<h3>It's blazing fast and light as a feather</h3>
+				<p>
+					Because Chief if is void of useless stuff and has
+					only the files you really, really need, performance
+					tends to be pretty good. With under 20 files, deploying
+					is effortless.
+				</p>
+				<p>
+					Chief weighs only 14kb. With an codebase this small,
+					we just haven't been able to fit that many bugs in. That's
+					a shame, but it also means that you'll spend more time coding
+					your app than dodging malfunctioning parts.
+				</p>
+				<hr class="soften">
+				<h3>It's extensible</h3>
+				<p>
+					Because of its simplicity, Chief can be easily extended.
+					The most obvious way is to add modules, but you can also
+					create plugins and add external libraries. For more advanced
+					hackers, feel free to take a stab at the core files &ndash;
+					they're designed to allow that.
+				</p>
+				<p>
+					Chief is by no means a ready framework. You make it your
+					own. It allows you to do the basic stuff just fine, but
+					when you need something a bit more specialized, you are
+					the one who knows best how to do it, not the framework.
+					Chief just helps you do it easier.
+				</p>
+				<p>
+					In the past, Chief has been used to create multidomain
+					environments, run a distributed CMS, power an enterprise
+					class bookkeeping software, and much more. Chief poses no
+					restrictions to what you can build.
+				</p>
+				<hr class="soften">
+				<h3>It's helpful</h3>
+				<p>
+					Chief has tools to make your life easier. Built in notification
+					system and a set of often needed functions help you make
+					cooler apps faster.
+				</p>
+				<p>
+					Chief also handles image resizing and caching automatically.
+					No matter how you store your images, when they are requested through
+					Chief, you can add parameters at the end of the file to affect
+					the output. Requesting <em>IMG_5324.jpg?800x600C</em> automatically resizes
+					the image to 800 by 600 pixels, cropping the overflowing parts out.
+					The result is cached, so this image needs to be generated only once.
+					Pretty damn great, right?
+				</p>
+			</div>
+			<div class="span6">
+				<h3>It's straightforward</h3>
+				<p>
+					Chief uses one to one mapping when translating URLs
+					to actual functions. So, let's say you have an url
+					<em>www.example.com/blog/article/chief_is_great/</em>,
+					Chief will try to find a module named <em>blog</em>
+					(it's actually just a class), run a function named
+					<em>article</em> in that class, passing rest of the
+					arguments in the URL as parameters.
+				</p>
+				<p>
+					You never have to define routes or try to figure out
+					where the hell that request is shooting. Some people
+					may not like things this simple, but they'll be busy
+					arguing semantics while you'll be publishing your new
+					shiny app and earning all the glory.
+				</p>
+				<hr class="soften">
+				<h3>It speaks database</h3>
+				<p>
+					Chief offers tools for accessing the database in
+					a simple but effective manner. There's no heavy
+					object-relational mapping, just sensible helper
+					functions that make manipulating the database a breeze.
+					Currently Chief supports MySQL and MariaDB.
+					What do you think about this:
+				</p>
+				<pre class="prettyprint language-php">$this->db->insert('news', [
+  'title'     => $title,
+  'slug'      => Common::slug($title),
+  'date'      => date('Y-m-d H:i:s'),
+  'published' => isset($_POST['published']),
+  'user_id'   => null
+]);</pre>
+				<p>Or this?</p>
+				<pre class="prettyprint language-php">$articles = $this->db->all("SELECT
+    title,
+    slug,
+    date
+  FROM news
+  WHERE user_id = '%d'
+  AND date > '%s'",
+  $user_id,
+  $date);</pre>
+				<hr class="soften">
+				<h3>It has kick ass plugins</h3>
+				<p>
+					Chief has plugins that make creating tables and
+					forms easier than ever. By utilizing method chaining and
+					anonymous functions,
+					defining your tables and forms in PHP actually becomes
+					a viable option. Take a look at this:
+				</p>
+				
+				<pre class="prettyprint language-php">$form = $this->plugin('form')
+  ->setData($event)
+  ->hidden('id')
+  ->text('name', 'Event name')->required()
+  ->date('date', 'Date')->dateFormat('n/j/Y')
+  ->text('price', 'Admission price')->transform(function($p) {
+    return number_format($p, 2, ',', '').' &euro;';
+  })
+  ->submit('submit', 'Save event');
+	
+echo $form;</pre>
+				<p>
+					Holy crap that looks neat. Tables can be created
+					just as easily. Chief also has an plugin for
+					handling images. You are also welcome to create your own
+					plugins and share them with others. Or don't.
+				</p>
+			</div>
+		</div>
+		<footer>
+			<a class="virtue" href="http://www.virtue.fi/">Virtue Softworks</a>
+		</footer>
+	</div>
+	<script src="//code.jquery.com/jquery.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/prettify.js"></script>
+</body>
 </html>

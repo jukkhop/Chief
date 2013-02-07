@@ -1,0 +1,36 @@
+body {
+	padding-top: 70px;
+}
+
+header {
+	background: #fff;
+	border-bottom: 1px solid #ddd;
+	width: 100%;
+	position: fixed;
+	top: 0;
+}
+
+header h1 {
+	float: left;
+	margin-right: 10px;
+	font-size: 50px;
+	line-height: 100%;
+	text-transform: uppercase;
+}
+
+header h1 a {
+	font-weight: 900;
+	color: inherit;
+}
+
+header h1 a:hover {
+	color: #000;
+	text-decoration: none;
+}
+
+header h2 {
+	font-weight: 300;
+	font-size: 50px;
+	line-height: 100%;
+}
+
