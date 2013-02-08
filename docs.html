@@ -136,13 +136,30 @@ class Landing extends Controller {
 	...</pre>
 				<p>And in the view you can use:</p>
 				<pre class="prettyprint language-html">&lt;h1&gt;The current time is &lt;?=$time?&gt;&lt;/h1&gt;</pre>
-				
 				<p>
 					Easy as that. While we generally discourage the use of short tags in
 					PHP, they're actually quite useful in templates. Compare the above to
 					having to write <code>&lt;?php echo $time; ?&gt;</code>. Ugh.
 				</p>
-				
+				<h3>Parameters</h3>
+				<p>
+					You can have your methods accept parameters. These parameters are defined
+					in the URL. If you have a URL such as <code>landing/main/2013/02/15/</code>,
+					you can catch the parameters like this:
+				</p>
+				<pre class="prettyprint language-php">	...
+	public function main($year, $month, $day) {
+		$data['date'] = date('n/j/Y', mktime(0, 0, 0, $month, $day, $year));
+		$data['time'] = date('H:i');
+		$this->view($data);
+	}
+	...</pre>
+				<h3>$_POST and $_GET</h3>
+				<p>
+					Chief does not do any sanitation to $_POST and $_GET
+					variables. You can use them directly, but remember to
+					be careful.
+				</p>
 				<hr class="soften">
 				<h1 id="accessing-database">Accessing database</h1>
 				<hr class="soften">

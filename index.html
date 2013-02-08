@@ -24,7 +24,7 @@
 				<a class="btn btn-primary btn-large btn-success" href="#">Download Chief</a>
 			</p>
 			<ul class="header-links">
-				<li><a href="#">GitHub project</a></li>
+				<li><a href="https://github.com/virtuesoftworks/chief">GitHub project</a></li>
 				<li><a href="docs.html">Documentation</a></li>
 				<li>Version 1.0</li>
 			</ul>
@@ -38,17 +38,18 @@
 				<p>With just under 20 files, Chief is stripped of all
 				superfluous content that you probably wouldn't use
 				anyways. A simple set of commands and guidelines
-				are enough to make your life easier.</p>
+				are enough to make your life easier. With a structure
+				this small, you'll learn the ins and outs in no time.</p>
 				<p>Creating your app is intuitive and fast. The file
 				structure is simple: everything you create is a module.
 				A module has a controller, and it can contain multiple views
-				and models. In addition to modules, Chief stores the important
+				and models. Modules are stored in <code>modules/</code>. In addition to modules, Chief stores the important
 				stuff in <code>system/</code>, plugins in <code>plugins/</code>
 				and your layout in <code>layout/</code>.</p>
 				<p>
 					Chief includes an install script that creates the
 					required database structure for you. Installing takes
-					under a minute, from clicking the Download button above
+					under a minute from clicking the Download button above
 					to being greeted by a lovely Hello World message.
 				</p>
 				<hr class="soften">
@@ -103,16 +104,21 @@
 					The result is cached, so this image needs to be generated only once.
 					Pretty damn great, right?
 				</p>
+				<p>
+					Chief also includes Twitter Bootstrap to get you
+					into speed with building your layout. But you can
+					always delete it if you are hardcore.
+				</p>
 			</div>
 			<div class="span6">
 				<h3>It's straightforward</h3>
 				<p>
 					Chief uses one to one mapping when translating URLs
-					to actual functions. So, let's say you have an url
-					<em>www.example.com/blog/article/chief_is_great/</em>,
-					Chief will try to find a module named <em>blog</em>
+					to actual functions. So, let's say you are accessing a page through the URL
+					<code>www.example.com/blog/article/chief_is_great/</code>.
+					Chief will try to find a module named <code>blog</code>
 					(it's actually just a class), run a function named
-					<em>article</em> in that class, passing rest of the
+					<code>article</code> in that class, passing rest of the
 					arguments in the URL as parameters.
 				</p>
 				<p>
@@ -132,6 +138,8 @@
 					Currently Chief supports MySQL and MariaDB.
 					What do you think about this:
 				</p>
+				<pre class="prettyprint language-php">$articles = $this->db->all("SELECT * FROM news");</pre>
+				<p>Or this?</p>
 				<pre class="prettyprint language-php">$this->db->insert('news', [
   'title'     => $title,
   'slug'      => Common::slug($title),
@@ -139,8 +147,6 @@
   'published' => isset($_POST['published']),
   'user_id'   => null
 ]);</pre>
-				<p>Or this?</p>
-				<pre class="prettyprint language-php">$articles = $this->db->all("SELECT * FROM news");</pre>
 				<hr class="soften">
 				<h3>It has kick ass plugins</h3>
 				<p>
