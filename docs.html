@@ -23,15 +23,17 @@
 				<div class="well affix" style="width: 180px;">
 					<ul class="nav nav-list">
 						<li class="nav-header">Getting started</li>
-						<li><a href="#">File structure</a></li>
-						<li><a href="#">Setting up</a></li>
-						<li><a href="#">Your first module</a></li>
-						<li><a href="#">Accessing database</a></li>
-						<li><a href="#">Adding functionality</a></li>
+						<li><a href="#file-structure">File structure</a></li>
+						<li><a href="#setting-up">Setting up</a></li>
+						<li><a href="#your-first-module">Your first module</a></li>
+						<li><a href="#handling-data">Handling data</a></li>
+						<li><a href="#using-models">Using models</a></li>
+						<li><a href="#accessing-database">Accessing database</a></li>
 						<li class="nav-header">Functionality</li>
-						<li><a href="#">Helper functions</a></li>
-						<li><a href="#">Notifications</a></li>
-						<li><a href="#">Images</a></li>
+						<li><a href="#layout-tools">Layout tools</a></li>
+						<li><a href="#helper-functions">Helper functions</a></li>
+						<li><a href="#notifications">Notifications</a></li>
+						<li><a href="#images">Images</a></li>
 						<li class="nav-header">Plugins</li>
 						<li><a href="#form">Form</a></li>
 						<li><a href="#table">Table</a></li>
@@ -40,68 +42,123 @@
 				</div>
 			</div>
 			<div class="span9">
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
-				<p>Foo</p>
+				<h1 id="file-structure">File structure</h1>
+				<hr class="soften">
+				<h1 id="setting-up">Setting up</h1>
+				<p>
+					When you first start your Chief installation by navigating 
+					to the address where you unpacked the files, Chief will
+					start the installer script. The installer will ask you
+					about database credentials and other basic stuff. Once you
+					get through that, Chief is installed and functioning. You
+					will be greeted by a Hello World page, that tells you
+					everything is OK.
+				</p>
+				<p>
+					After setting up, be sure to remove the install.php file
+					from the root folder if Chief cannot do that automatically.
+				</p>
+				<p>
+					Now you're ready to start coding your next killer app.
+					Chief includes only one module by default: the error handling
+					module. Feel free to modify this module to your liking, but
+					do not remove it, unless you want to see ugly error messages.
+				</p>
+				<hr class="soften">
+				<h1 id="your-first-module">Your first module</h1>
+				<p>
+					Let's start by creating a simple landing page for your app.
+					Create a new folder called <code>landing/</code> under <code>modules/</code>.
+					Inside that folder, create a folder called <code>view/</code> and
+					a file <code>landing.php</code>, so that your file structure looks like this:
+				</p>
+				<pre>layout/
+modules/
+  errors/
+  modules/
+    <span style="color: #2c2;">landing/
+      view/
+      landing.php</span>
+plugins/
+system/</pre>
+				<p>
+					Open <code>landing.php</code>. This is the controller of the module. It has to be
+					the same name as the folder it resides in. The controller handles all
+					input and output of this module with the help of views and modules. A
+					module can have only one controller. Modify the contents of this file
+					so that it looks like this:
+				</p>
+				<pre class="prettyprint language-php">&lt;?php
+class Landing extends Controller {
+	public function main() {
+	}
+}</pre>
+				<p>
+					The class you just created is the controller. It has to be named like
+					the filename, with capital first letter. This class has one method,
+					<code>main()</code>. This is the entry point for the class, and every controller
+					must have at least this method defined.
+				</p>
+				<p>
+					As we are creating just a simple static landing page, we don't need
+					any functionality in the controller. We just need to call a view
+					that contains the HTML we want to output. This can be accomplished
+					by using the <code>view()</code> method:
+				</p>
+				<pre class="prettyprint language-php">	...
+	public function main() {
+		$this->view();
+	}
+	...</pre>
+				<p>
+					Now Chief is trying to find a file named <code>main.php</code> in your <code>view/</code>
+					folder. Create this file and insert the following HTML:
+				<pre class="prettyprint language-html">&lt;h1&gt;My kick ass module!&lt;/h1&gt;</pre>
+				<p>
+					Now, when you navigate your browser to <code>mysite.com/landing/</code>, you'll be
+					greeted with the message we just created. That's it, your very first module!
+					It doesn't do much, so next we'll be...
+				</p>
+				<hr class="soften">
+				<h1 id="handling-data">Handling data</h1>
+				<p>
+					When you want to handle variables inside your controllers
+					to pass to the views, you use the <code>$data</code> array.
+					When you store all your variables inside this array and
+					pass it to <code>view()</code>, the variables will be
+					neatly available in the view. Like this:
+				</p>
+				<pre class="prettyprint language-php">	...
+	public function main() {
+		$data['time'] = date('H:i');
+		$this->view($data);
+	}
+	...</pre>
+				<p>And in the view you can use:</p>
+				<pre class="prettyprint language-html">&lt;h1&gt;The current time is &lt;?=$time?&gt;&lt;/h1&gt;</pre>
+				
+				<p>
+					Easy as that. While we generally discourage the use of short tags in
+					PHP, they're actually quite useful in templates. Compare the above to
+					having to write <code>&lt;?php echo $time; ?&gt;</code>. Ugh.
+				</p>
+				
+				<hr class="soften">
+				<h1 id="accessing-database">Accessing database</h1>
+				<hr class="soften">
+				<h1 id="layout-tools">Layout tools</h1>
+				<hr class="soften">
+				<h1 id="helper-functions">Helper functions</h1>
+				<hr class="soften">
+				<h1 id="notifications">Notifications</h1>
+				<hr class="soften">
+				<h1 id="images">Images</h1>
+				<hr class="soften">
+				<h1 id="form">Form</h1>
+				<hr class="soften">
+				<h1 id="table">Table</h1>
+				<hr class="soften">
+				<h1 id="image">Image</h1>
 			</div>
 		</div>
 	</div>
@@ -111,5 +168,15 @@
 	<script src="//code.jquery.com/jquery.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/prettify.js"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-34897003-3']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 </body>
 </html>

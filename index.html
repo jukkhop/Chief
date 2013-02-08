@@ -140,15 +140,7 @@
   'user_id'   => null
 ]);</pre>
 				<p>Or this?</p>
-				<pre class="prettyprint language-php">$articles = $this->db->all("SELECT
-    title,
-    slug,
-    date
-  FROM news
-  WHERE user_id = '%d'
-  AND date > '%s'",
-  $user_id,
-  $date);</pre>
+				<pre class="prettyprint language-php">$articles = $this->db->all("SELECT * FROM news");</pre>
 				<hr class="soften">
 				<h3>It has kick ass plugins</h3>
 				<p>
@@ -165,9 +157,16 @@
   ->text('name', 'Event name')->required()
   ->date('date', 'Date')->dateFormat('n/j/Y')
   ->text('price', 'Admission price')->transform(function($p) {
-    return number_format($p, 2, ',', '').' &euro;';
-  })
+    return number_format($p, 2, ',', '')
+  })->width(50)->append('&euro;')
   ->submit('submit', 'Save event');
+  
+if($form->isSent()) {
+  $errors = $form->setValues($_POST)->validate();
+  if(empty($errors)) {
+    # No errors, I'm gonna save this so hard!
+  }
+}
 	
 echo $form;</pre>
 				<p>
@@ -185,5 +184,15 @@ echo $form;</pre>
 	<script src="//code.jquery.com/jquery.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/prettify.js"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-34897003-3']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 </body>
 </html>
