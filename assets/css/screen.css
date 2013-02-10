@@ -1,8 +1,7 @@
 body {
 	font: 400 14px Open Sans, sans-serif;
 	color: #555;
-	background: url(../img/html-bg.png) #f3f3f3 center top;
-	background-attachment: fixed;
+	background: #f3f3f3;
 }
 
 hr.soften {
