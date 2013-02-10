@@ -1,0 +1,9 @@
+RewriteEngine On
+Options +FollowSymlinks
+
+RewriteCond %{REQUEST_FILENAME} (jpg|png|gif|jpeg) [NC]
+RewriteCond %{QUERY_STRING} !^$
+RewriteRule ^(.*)$ core/image.php?$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?$1 [L]
