@@ -1,4 +1,6 @@
 <?php
+namespace Chief;
+
 session_start();
 ob_start();
 define('AJAX_CALL', isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
@@ -10,20 +12,21 @@ if(file_exists('setup.php')) {
 
 require_once('system/config.php');
 
-require_once('system/classes/common.php');
-require_once('system/classes/core.php');
-require_once('system/classes/controller.php');
-require_once('system/classes/database.php');
-require_once('system/classes/layout.php');
-require_once('system/classes/model.php');
-require_once('system/classes/notifications.php');
-require_once('system/classes/plugin.php');
+require_once('core/common.php');
+require_once('core/core.php');
+require_once('core/controller.php');
+require_once('core/database.php');
+require_once('core/layout.php');
+require_once('core/model.php');
+require_once('core/notifications.php');
+require_once('core/plugin.php');
 
 date_default_timezone_set(TIMEZONE);
 
 spl_autoload_register(function($module) {
-	$module = trim($module, './\\');
-	$path = strtolower('modules/'.$module.'/'.$module.'.php');
+	$module = str_replace('Chief\\', '', $module);
+	$module = trim($module, '\\/.');
+	$path = 'modules/'.$module.'/'.$module.'.php';
 	if(file_exists($path)) {
 		require_once($path);
 	}
@@ -45,7 +48,7 @@ $directory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 $module = empty($module) ? DEFAULT_MODULE : $module;
 $method = empty($method) ? 'main' : $method;
 
-if(!method_exists($module, $method)) {
+if(!method_exists('Chief\\'.$module, $method)) {
 	$arguments = array('Page '.$module.'/'.$method.' does not exist.');
 	$module = 'error';
 	$method = 'main';

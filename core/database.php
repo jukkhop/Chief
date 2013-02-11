@@ -1,4 +1,5 @@
 <?php
+namespace Chief;
 
 class Database {
 	
@@ -17,27 +18,27 @@ class Database {
 			switch($driver) {
 				case 'mysql':
 				case 'mariadb':
-					$this->connection = new PDO(
+					$this->connection = new \PDO(
 						sprintf('mysql:host=%s;dbname=%s', $host, $db),
 						$user,
 						$pass,
-						[PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"]
+						[\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"]
 					);
 					break;
 				case 'pgsql':
-					$this->connection = new PDO(
+					$this->connection = new \PDO(
 						sprintf('pgsql:dbname=%s;host=%s;', $host, $db),
 						$user,
 						$pass);
 					break;
 				case 'sqlsrv':
-					$this->connection = new PDO(
+					$this->connection = new \PDO(
 						sprintf('sqlsrv:Server=%s;Database=%s;', $host, $db),
 						$user,
 						$pass);
 					break;
 				case 'sqlite':
-					$this->connection = new PDO(
+					$this->connection = new \PDO(
 						sprintf('sqlite:%s', $db),
 						$user,
 						$pass);

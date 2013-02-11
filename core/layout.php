@@ -1,4 +1,5 @@
 <?php
+namespace Chief;
 
 class Layout {
 	

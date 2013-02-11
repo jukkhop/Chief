@@ -1,4 +1,5 @@
 <?php
+namespace Chief;
 
 # Helper functions
 class Common {

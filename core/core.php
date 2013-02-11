@@ -1,4 +1,5 @@
 <?php
+namespace Chief;
 
 class Core {
 	
@@ -7,10 +8,11 @@ class Core {
 	protected $method;
 	
 	public static function init($module, $method, $arguments, $db, $layout) {
-		$controller = new $module($db, $layout);
+		$fully_qualified_name = 'Chief\\'.ucwords($module);
+		$controller = new $fully_qualified_name($db, $layout);
 		$controller->set_module($module);
 		$controller->set_method($method);
-		$function = new ReflectionMethod($module, $method);
+		$function = new \ReflectionMethod($fully_qualified_name, $method);
 		$function->invokeArgs($controller, $arguments);
 	}
 	
