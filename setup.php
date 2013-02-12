@@ -2,8 +2,8 @@
 $tz     = isset($_POST['TIMEZONE']) ? $_POST['TIMEZONE'] : date_default_timezone_get();
 $errors = array();
 if(!empty($_POST)) {
-	require('system/classes/database.php');
-	$str = "<?php\n\n";
+	require('core/database.php');
+	$str = "<?php\n";
 	if(isset($_POST['no_database'])) {
 		$str .= "define('DB_HOST', null);\n";
 		$str .= "define('DB_USER', null);\n";
