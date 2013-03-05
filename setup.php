@@ -1,4 +1,5 @@
 <?php
+namespace Chief;
 $tz     = isset($_POST['TIMEZONE']) ? $_POST['TIMEZONE'] : date_default_timezone_get();
 $errors = array();
 if(!empty($_POST)) {
@@ -166,7 +167,7 @@ $checklist = array(
 					<legend>General options</legend>
 					<label>Timezone</label>
 					<select name="TIMEZONE">
-						<?php foreach(DateTimeZone::listIdentifiers() as $id): ?>
+						<?php foreach(\DateTimeZone::listIdentifiers() as $id): ?>
 							<option value="<?=$id?>"<?=$tz == $id ? ' selected': ''?>><?=$id?></option>
 						<?php endforeach; ?>
 					</select>
