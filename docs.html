@@ -11,7 +11,7 @@
 	<link href="assets/css/screen.css" rel="stylesheet">
 	<link href="assets/css/docs.css" rel="stylesheet">
 </head>
-<body onload="prettyPrint()">
+<body>
 	<header>
 		<div class="container">
 			<h1><a href="index.html">Chief</a></h1>
@@ -21,7 +21,7 @@
 	<div class="container content">
 		<div class="row">
 			<div class="span3">
-				<div class="well affix" style="width: 180px;">
+				<div class="affix" style="width: 180px;">
 					<ul class="nav nav-list">
 						<li class="nav-header">Getting started</li>
 						<li><a href="#file-structure">File structure</a></li>
@@ -56,12 +56,9 @@
 					everything is OK.
 				</p>
 				<p>
-					After setting up, be sure to remove the install.php file
-					from the root folder if Chief cannot do that automatically.
-				</p>
-				<p>
 					Now you're ready to start coding your next killer app.
-					Chief includes only one module by default: the error handling
+					Chief includes two modules by default: hello world module
+					to demonstrate basic functionality and the error handling
 					module. Feel free to modify this module to your liking, but
 					do not remove it, unless you want to see ugly error messages.
 				</p>
@@ -112,7 +109,7 @@ class Landing extends Controller {
 	}
 	...</pre>
 				<p>
-					Now Chief is trying to find a file named <code>main.php</code> in your <code>view/</code>
+					Now Chief is trying to find a file named <code>main.php</code> in your newly created <code>view/</code>
 					folder. Create this file and insert the following HTML:
 				<pre class="prettyprint language-html">&lt;h1&gt;My kick ass module!&lt;/h1&gt;</pre>
 				<p>
@@ -138,8 +135,8 @@ class Landing extends Controller {
 				<p>And in the view you can use:</p>
 				<pre class="prettyprint language-html">&lt;h1&gt;The current time is &lt;?=$time?&gt;&lt;/h1&gt;</pre>
 				<p>
-					Easy as that. While we generally discourage the use of short tags in
-					PHP, they're actually quite useful in templates. Compare the above to
+					Easy as that. While we generally discourage using short tags in
+					PHP, they're actually quite useful in views. Compare the above to
 					having to write <code>&lt;?php echo $time; ?&gt;</code>. Ugh.
 				</p>
 				<h3>Parameters</h3>
@@ -163,6 +160,47 @@ class Landing extends Controller {
 				</p>
 				<hr class="soften">
 				<h1 id="accessing-database">Accessing database</h1>
+				
+				<p>
+					Chief includes a database helper class, that internally uses PDO. This means
+					that you can use any database that PDO supports. Chief abstracts connecting to
+					the database, but does not attempt to abstract the actual SQL queries.
+				</p>
+				
+				<h3>Using the database</h3>
+				<p>
+					Chief automatically connects to the database and makes the connection available
+					through <code>$db</code> class variable. Connection parameters are defined in <code>system/config.php</code>.
+					These values are automatically set if you gave them during the setup.
+				</p>
+				<p>
+					Every controller, method and plugin has access to the database via the class variable.
+					You can use database like this:
+				</p>
+				<pre class="prettyprint language-php">	...
+	public function main() {
+		$this->db->query("SELECT hello FROM world");
+	}
+	...</pre>
+				<p>You don't need to initialize anythin, just use it.</p>
+				
+				<h3>Connecting</h3>
+				<p>If you for some reason need to connect to the database manually (eg. you need
+				another database handle), you can use the constructor of the <code>Database</code> class:
+				</p>
+				<pre class="prettyprint language-php">	...
+		$my_db = new Database('username', 'password', 'server', 'database', 'driver');
+	...</pre>
+				<p>...where username and password are self explanatory, server is the address
+				of the database server (usually <code>localhost</code>), database is the database you
+				wish to choose and driver is the database driver to use. Supported values are:
+				</p>
+				<ul>
+					<li>mysql - MySQL</li>
+					<li>mariadb - MariaDB</li>
+					<li>mssql - Microsoft SQL Server</li>
+					<li>pgsql - PostgreSQL</li>
+				</ul>
 				<hr class="soften">
 				<h1 id="layout-tools">Layout tools</h1>
 				<hr class="soften">
@@ -195,6 +233,23 @@ class Landing extends Controller {
 			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 		})();
+	</script>
+	<script type="text/javascript">
+	$(function() {
+		prettyPrint();
+		$('body').scrollspy({
+			offset: 85
+			});
+		$('.nav a').click(function() {
+			var $target = $(this.hash);
+			if($target.length) {
+				$('html, body').animate({
+					scrollTop: $target.offset().top - 85
+				}, 200);
+				return false;
+			}
+		});
+	});
 	</script>
 </body>
 </html>
