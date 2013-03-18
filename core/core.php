@@ -24,7 +24,7 @@ class Core
     
     function model($model)
     {
-        return Model::initialize($model, $this->db, $this->get_module());
+        return Model::initialize($model, $this->db, $this->getModule());
     }
     
     function plugin($plugin)

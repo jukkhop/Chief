@@ -68,7 +68,7 @@ class Database
 
         try {
             $statement->execute($args);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             echo $e->getMessage()."\n";
             $trace = $e->getTrace();
             if(isset($trace[1])) {
@@ -127,7 +127,7 @@ class Database
     # Escape variables
     public function escape($str)
     {
-        return is_scalar($str) ? PDO::quote($str) : $str;
+        return is_scalar($str) ? mysql_real_escape_string($str) : $str;
     }
 
     # Insert
@@ -145,7 +145,7 @@ class Database
         }
         $query .= implode(",\n", $values);
         $statement = $this->query($query);
-        return $statement === false ? false : PDO::lastInsertId;
+        return $statement === false ? false : $this->connection->lastInsertId();
     }
 
     # Replace
@@ -163,7 +163,7 @@ class Database
         }
         $query .= implode(",\n", $values);
         $statement = $this->query($query);
-        return $statement === false ? false : PDO::lastInsertId;
+        return $statement === false ? false : $this->connection->lastInsertId();
     }
 
     # Update
@@ -193,7 +193,7 @@ class Database
         $query .= 'WHERE '.$where;
 
         $statement = $this->query($query);
-        return $result === false ? false : $statement->rowCount();
+        return $statement === false ? false : $statement->rowCount();
     }
 
     # Begin transaction

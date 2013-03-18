@@ -1,7 +1,7 @@
 <?php
 namespace Chief;
 
-class Plugin extends Core
+class Plugin
 {    
     protected $db;
 
