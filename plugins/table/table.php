@@ -237,7 +237,7 @@ class Table extends Plugin
             $this->rendered = sprintf('<p class="info">%s</p>', $this->emptyMessage);
         } else {
             $id = is_null($this->id) ? '' : ' id="'.$this->id.'"';
-            $table = sprintf('<table%s>', $id);        
+            $table = sprintf('<table%s class="table">', $id);        
             $table .= '<tr>';
 
             if($this->selectable) {
@@ -323,7 +323,7 @@ class Table extends Plugin
                         $url = $this->formatString($action->url, $row);
                         $condition = $action->condition;
                         if($condition($row)) {                        
-                            $table .= sprintf('<a class="icon %s" href="%s%s"></a>', $type, BASE_DIR, $url);
+                            $table .= sprintf('<a href="%s%s"><i class="icon-%s"></i></a>', BASE_DIR, $url, $type);
                         }
                     }
                     $table .= '</td>';
