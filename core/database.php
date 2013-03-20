@@ -127,25 +127,16 @@ class Database
     # Escape variables
     public function escape($str)
     {
-        return is_scalar($str) ? mysql_real_escape_string($str) : $str;
+        return is_scalar($str) ? $this->connection->quote($str) : $str;
     }
 
     # Insert
     public function insert($table, $fields)
     {
-        $query = sprintf("INSERT INTO `%s` SET\n", $this->escape($table));
-        $values = array();
-        foreach($fields as $key => $value) {
-            if(is_null($value)) {
-                $value = 'NULL';
-            } else {
-                $value = sprintf("'%s'", $this->escape($value));
-            }
-            $values[] = sprintf("`%s` = %s", $this->escape($key), $value);
-        }
-        $query .= implode(",\n", $values);
-        $statement = $this->query($query);
-        return $statement === false ? false : $this->connection->lastInsertId();
+    	$columns = implode(',', array_keys($fields));
+		$values  = implode(',', array_fill(0, count($fields), '?'));
+		$statement = $this->connection->prepare("INSERT INTO {$table} ({$columns}) VALUES ({$values})");
+		return $statement->execute(array_values($fields)) === false ? false : $this->connection->lastInsertId();
     }
 
     # Replace
@@ -169,26 +160,26 @@ class Database
     # Update
     public function update($table, $fields, $where = null)
     {
-        $query = sprintf("UPDATE `%s` SET\n", $this->escape($table));
+        $query = sprintf("UPDATE %s SET\n", $table);
         $values = array();
         foreach($fields as $key => $value) {
             if(is_null($value)) {
                 $value = 'NULL';
             } else {
-                $value = sprintf("'%s'", $this->escape($value));
+                $value = $this->escape($value);
             }
-            $values[] = sprintf("`%s` = %s", $this->escape($key), $value);
+            $values[] = sprintf("%s = %s", $key, $value);
         }
         $query .= implode(",\n", $values)."\n";
 
         if(is_array($where)) {
             $_where = array();
             foreach($where as $key => $value) {
-                $_where[] = sprintf("`%s` = '%s'", $this->escape($key), $this->escape($value));
+                $_where[] = sprintf("%s = %s", $key, $this->escape($value));
             }
             $where = implode(" AND ", $_where);
         } else {
-            $where = sprintf("`id` = '%s'", $this->escape($where));
+            $where = sprintf("`id` = %s", $this->escape($where));
         }
         $query .= 'WHERE '.$where;
 
