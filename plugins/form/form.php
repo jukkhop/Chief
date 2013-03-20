@@ -395,7 +395,7 @@ class Form extends Plugin
             'label' => $label,
             'generator' => function($field) {
                 $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
-                return sprintf('<input id="%s" class="button" type="button" name="%s" value="%s"%s />', $field['name'], $field['name'], $field['label'], $disabled);
+                return sprintf('<input id="%s" class="btn" type="button" name="%s" value="%s"%s />', $field['name'], $field['name'], $field['label'], $disabled);
             }
         );
         return $this;
@@ -411,7 +411,7 @@ class Form extends Plugin
             'no_label' => $no_label,
             'generator' => function($field) {
                 $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
-                return sprintf('<input id="%s" class="button important" type="submit" name="%s" value="%s"%s />', $field['name'], $field['name'], $field['label'], $disabled);
+                return sprintf('<input id="%s" class="btn btn-primary" type="submit" name="%s" value="%s"%s />', $field['name'], $field['name'], $field['label'], $disabled);
             }
         );
         return $this;
@@ -595,26 +595,28 @@ class Form extends Plugin
 
         $error = isset($this->errors[$name]) ? sprintf('<p class="error">%s</p>', $this->errors[$name]) : null;
 
-        $class[] = 'form-field-'.$field['name'];
-
-        if($field['required']) $class[] = 'required';
-        if(!is_null($error))   $class[] = 'error';
-        if(isset($field['className'])) $class[] = $field['className'];
-
-        $class = empty($class) ? '' : ' class="'.implode(' ', $class).'"';
-
         $field['width'] = isset($field['width']) ? $field['width'] : null;
         $field['value'] = $value;
 
-        $html .= sprintf('<li%s>', $class);
         $html .= is_null($label) ? '' : sprintf('<label for="%s">%s</label>', $name, $label);
 
         if($field['type'] == 'hidden') {
             $html = '';
         }
-
+        
+        $wrap = array_filter([
+        	isset($field['prepend']) && strip_tags($field['prepend']) == $field['prepend'] ? 'input-prepend' : null,
+        	isset($field['append']) && strip_tags($field['append']) == $field['append'] ? 'input-append' : null
+		]);
+        
+		$wrap = empty($wrap) ? false : implode(' ', $wrap);
+		
+		if($wrap) {
+			$html .= '<div class="'.$wrap.'">';
+		}
+			
         if(isset($field['prepend'])) {
-            $html .= sprintf('<span class="append">%s</span>', $field['prepend']);
+            $html .= sprintf('<span class="add-on prepend">%s</span>', $field['prepend']);
         }
 
         if($this->readOnly) {
@@ -629,17 +631,18 @@ class Form extends Plugin
         $html .= $field['generator']($field, $this->values);
 
         if(isset($field['append'])) {
-            $html .= sprintf('<span class="append">%s</span>', $field['append']);
+            $html .= sprintf('<span class="add-on append">%s</span>', $field['append']);
         }
 
+        if($wrap) {
+			$html .= '</div>';
+		}
+        
         if(isset($field['info']) && !empty($field['info'])) {
             $html .= sprintf('<p class="info">%s</p>', $field['info']);
         }
 
         $html .= $error;
-        if($field['type'] != 'hidden') {
-            $html .= '</li>';
-        }
 
         return $html;
     }
@@ -704,45 +707,25 @@ class Form extends Plugin
             if($field['type'] == 'fieldset') {                
                 $className = !is_null($field['className']) ? sprintf(' class="%s"', $field['className']) : '';
 
-                if($ul_open) {
-                    $form .= '</ul>';
-                    $ul_open = false;
-                }
-
                 if($fieldset_open) {
                     $form .= '</fieldset>';
                     $fieldset_open = false;
                 }
 
                 $form .= sprintf('<fieldset id="%s"%s>', Common::slug($field['label']), $className);
-                $form .= sprintf('<span class="legend">%s</span>', $field['label']);
-                $form .= '<ul>';
+                $form .= sprintf('<legend>%s</legend>', $field['label']);
 
-                $ul_open = true;
                 $fieldset_open = true;
                 continue;
             }
 
             if($field['type'] == 'fieldsetClose' && $fieldset_open) {
-                if($ul_open) {
-                    $form .= '</ul>';
-                    $ul_open = false;
-                }
                 $form .= '</fieldset>';
                 continue;
             }
 
-            if(!$ul_open) {
-                $form .= '<ul>';
-                $ul_open = true;
-            }
-
             $form .= $this->render_field($name);
         }        
-
-        if($ul_open) {
-            $form .= '</ul>';
-        }
 
         if($fieldset_open) {
             $form .= '</fieldset>';
