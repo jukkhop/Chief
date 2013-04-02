@@ -14,7 +14,7 @@ class Core
         $controller->setModule($module);
         $controller->setMethod($method);
         $function = new \ReflectionMethod($fully_qualified_name, $method);
-        $function->invokeArgs($controller, $arguments);
+        $function->invokeArgs($controller, empty($arguments) ? [] : $arguments);
     }
     
     public function __construct($db)

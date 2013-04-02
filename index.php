@@ -28,7 +28,7 @@ date_default_timezone_set(TIMEZONE);
 spl_autoload_register(function($module) {
     $module = str_replace('Chief\\', '', $module);
     $module = trim($module, '\\/.');
-    $path = 'modules/'.$module.'/'.$module.'.php';
+    $path = strtolower('modules/'.$module.'/'.$module.'.php');
     if(file_exists($path)) {
         require_once($path);
     }
@@ -58,6 +58,8 @@ if(!method_exists('Chief\\'.$module, $method)) {
 
 define('LAYOUT_HEADER', 'layout/header.php');
 define('LAYOUT_FOOTER', 'layout/footer.php');
+define('MODULE', $module);
+define('METHOD', $method);
 
 $layout->setHeader(LAYOUT_HEADER);
 $layout->setFooter(LAYOUT_FOOTER);
