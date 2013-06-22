@@ -316,7 +316,7 @@ class Form extends Plugin
                 } elseif(is_array($field['options']) && !empty($field['options'])) {
                     foreach($field['options'] as $k => $v) {
                         if(is_array($field['value'])) {
-                            $checked = isset($field['value'][$k]) ? ' checked="checked"' : '';
+                            $checked = in_array($k, $field['value']) ? ' checked="checked"' : '';
                         } else {
                             $checked = $k == $field['value'] ? ' checked="checked"' : '';
                         }
@@ -562,8 +562,10 @@ class Form extends Plugin
             'info' => null,
             'className' => null
         );
+        
+        $error = isset($this->errors[$name]) ? sprintf('<p class="error">%s</p>', $this->errors[$name]) : null;
 
-        $html = '';
+        $html = '<li'.(empty($error) ? '' : ' class="error"').'>';
         $class = array();
 
         $field = array_merge($field_hull, $this->fields[$name]);
@@ -593,8 +595,6 @@ class Form extends Plugin
             $label = null;
         }
 
-        $error = isset($this->errors[$name]) ? sprintf('<p class="error">%s</p>', $this->errors[$name]) : null;
-
         $field['width'] = isset($field['width']) ? $field['width'] : null;
         $field['value'] = $value;
 
@@ -605,16 +605,16 @@ class Form extends Plugin
         }
         
         $wrap = array_filter([
-        	isset($field['prepend']) && strip_tags($field['prepend']) == $field['prepend'] ? 'input-prepend' : null,
-        	isset($field['append']) && strip_tags($field['append']) == $field['append'] ? 'input-append' : null
-		]);
+            isset($field['prepend']) && strip_tags($field['prepend']) == $field['prepend'] ? 'input-prepend' : null,
+            isset($field['append']) && strip_tags($field['append']) == $field['append'] ? 'input-append' : null
+        ]);
         
-		$wrap = empty($wrap) ? false : implode(' ', $wrap);
-		
-		if($wrap) {
-			$html .= '<div class="'.$wrap.'">';
-		}
-			
+        $wrap = empty($wrap) ? false : implode(' ', $wrap);
+        
+        if($wrap) {
+            $html .= '<div class="'.$wrap.'">';
+        }
+            
         if(isset($field['prepend'])) {
             $html .= sprintf('<span class="add-on prepend">%s</span>', $field['prepend']);
         }
@@ -635,14 +635,16 @@ class Form extends Plugin
         }
 
         if($wrap) {
-			$html .= '</div>';
-		}
+            $html .= '</div>';
+        }
+        
+        $html .= $error;
         
         if(isset($field['info']) && !empty($field['info'])) {
             $html .= sprintf('<p class="info">%s</p>', $field['info']);
         }
-
-        $html .= $error;
+        
+        $html .= '</li>';
 
         return $html;
     }
@@ -652,8 +654,8 @@ class Form extends Plugin
         $fieldset_open = false;
         $ul_open       = false;
 
-        $enctype   = $this->hasFile ? ' enctype="multipart/form-data"' : '';        
-        $className = !empty($this->className) ? ' class="'.$this->className.'"' : '';
+        $enctype   = $this->hasFile ? ' enctype="multipart/form-data"' : '';
+        $className = !empty($this->className) ? ' class="'.$this->className.'"' : '';        
         $form      = sprintf('<form%s method="%s" action="%s"%s>', $className, $this->method, $this->formatString($this->action, $this->values), $enctype);
         $global_errors_keys = array_diff(array_keys($this->errors), array_keys($this->fields));
 
@@ -696,6 +698,8 @@ class Form extends Plugin
             $field['value'] = $value;
             $form .= $field['generator']($field, $values);
         }
+        
+        $form .= '<ul>';
 
         # Insert visible fields
         foreach($this->fields as $name => $field) {
@@ -731,6 +735,7 @@ class Form extends Plugin
             $form .= '</fieldset>';
         }
 
+        $form .= '</ul>';
         $form .= '</form>';
         $form .= '<div style="clear: both;"></div>';
 
