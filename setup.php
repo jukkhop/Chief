@@ -24,7 +24,7 @@ if(!empty($_POST)) {
 	}
 	$str .= "define('PASSWORD_SALT', '".sha1(time()*rand())."');\n";
 	$str .= "define('TIMEZONE', '".$_POST['TIMEZONE']."');\n";
-	$str .= "define('DEFAULT_MODULE', '".$_POST['DEFAULT_MODULE']."');\n";
+	$str .= "define('DEFAULT_MODULE', 'pages');\n";
 	if(empty($errors)) {
 		file_put_contents('system/config.php', $str);
 		if(isset($_POST['remove_bootstrap'])) {
@@ -171,8 +171,6 @@ $checklist = array(
 							<option value="<?=$id?>"<?=$tz == $id ? ' selected': ''?>><?=$id?></option>
 						<?php endforeach; ?>
 					</select>
-					<label>Default module</label>
-					<input type="text" name="DEFAULT_MODULE" value="helloworld">
 					<label class="checkbox">
 						<input type="checkbox" name="remove_bootstrap" /> Remove Twitter Bootstrap
 					</label>
