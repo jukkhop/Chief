@@ -7,6 +7,9 @@
         messages and <code>pages</code> to serve static pages you might need. This page can be found at
         <code>modules/pages/view/main.php</code></p>
         
+        <p>You can remove these modules if you really need to. Chief is designed to work with you, not
+        the other way around.</p>
+        
         <p>You can change the default entry point to your app via <code>system/config.php</code>.</p>
         
         <p>

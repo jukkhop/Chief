@@ -149,10 +149,10 @@ $checklist = array(
 					</label>
 					<label>Driver</label>
 					<select name="DB_DRIVER">
-						<option value="sqlsrv"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'sqlsrv'?' selected':''?>>MSSQL</option>
 						<option value="mysql"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'mysql'?' selected':''?>>MySQL</option>
 						<option value="mariadb"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'mariadb'?' selected':''?>>MariaDB</option>
 						<option value="sqlite"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'sqlite'?' selected':''?>>SQLite</option>
+						<option value="sqlsrv"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'sqlsrv'?' selected':''?>>MSSQL</option>
 					</select>
 					<label>Host</label>
 					<input type="text" name="DB_HOST" value="localhost" value="<?=empty($_POST['DB_HOST'])?'':$_POST['DB_HOST']?>">
