@@ -70,7 +70,8 @@ class Database
             $status = $statement->execute($args);
             if($status === false) {
                 $error = $statement->errorInfo();
-                echo $error[2];
+                echo $error[2]."\n\n";
+                echo $sql."\n\n";
                 $trace = debug_backtrace();
                 if(isset($trace[1])) {
                     echo 'Called in '.$trace[1]['file'].' on line '.$trace[1]['line']."\n";
@@ -191,7 +192,7 @@ class Database
             $values[] = $where;
             $where = sprintf("`id` = ?");
         }
-        $query .= 'WHERE '.$where;
+        $query .= ' WHERE '.$where;
 
         $statement = $this->execute(array_merge([$query], $values));
         return $statement === false ? false : $statement->rowCount();
