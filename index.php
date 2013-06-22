@@ -22,7 +22,7 @@ require_once('core/model.php');
 require_once('core/notifications.php');
 require_once('core/plugin.php');
 
-require_once('system/init.php');
+require_once('system/config.php');
 
 date_default_timezone_set(TIMEZONE);
 spl_autoload_register(function($module) {
@@ -58,11 +58,14 @@ if(!method_exists('Chief\\'.$module, $method)) {
 
 define('LAYOUT_HEADER', 'layout/header.php');
 define('LAYOUT_FOOTER', 'layout/footer.php');
-define('MODULE', $module);
-define('METHOD', $method);
 
 $layout->setHeader(LAYOUT_HEADER);
 $layout->setFooter(LAYOUT_FOOTER);
+
+define('MODULE', $module);
+define('METHOD', $method);
+
+require_once('system/init.php');
 
 try {
     Core::init($module, $method, $arguments, $db, $layout);
