@@ -94,7 +94,7 @@ class Layout
         );
     }
 
-    public static function css($path, $priority = 0)
+    public static function css($path, $priority = 1)
     {
         if(is_array($path)) {
             $defaults = array(
@@ -110,7 +110,7 @@ class Layout
             foreach($css as $key => $value) {
                 $attrs[] = $key.'="'.$value.'"';
             }
-            self::$assets['css'][$priority][] = sprintf('<link %s />', implode(' ', $attrs));
+            self::$assets['css'][$priority][] = sprintf('<link %s>', implode(' ', $attrs));
         } else if(is_string($priority) && (int)$priority !== $priority) {
             foreach(func_get_args() as $path) {
                 self::css($path);
@@ -123,11 +123,11 @@ class Layout
             if(!isset(self::$assets['css'][$priority])) {
                 self::$assets['css'][$priority] = array();
             }
-            self::$assets['css'][$priority][] = sprintf('<link rel="stylesheet" type="text/css" href="%s" />', $path);
+            self::$assets['css'][$priority][] = sprintf('<link rel="stylesheet" type="text/css" href="%s">', $path);
         }
     }
 
-    public static function js($path, $priority = 0)
+    public static function js($path, $priority = 1)
     {
         if(is_string($priority) && (int)$priority !== $priority) {
             foreach(func_get_args() as $path) {
@@ -151,17 +151,17 @@ class Layout
         $html  = '<!DOCTYPE html>'."\n";
         $html .= '<html>'."\n";
         $html .= '<head>'."\n";
-        $html .= '    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'."\n";
+        $html .= '    <meta charset="UTF-8">'."\n";
         if(!empty(self::$keywords)) {
-            $html .= '    <meta name="keywords" content="'.(is_array(self::$keywords) ? implode(',', self::$keywords) : self::$keywords).'" />'."\n";
+            $html .= '    <meta name="keywords" content="'.(is_array(self::$keywords) ? implode(',', self::$keywords) : self::$keywords).'">'."\n";
         }
         if(!empty(self::$meta)) {
             foreach(self::$meta as $m) {
-                $html .= '    <meta '.$m['keyname'].'="'.$m['key'].'" content="'.$m['value'].'" />'."\n";
+                $html .= '    <meta '.$m['keyname'].'="'.$m['key'].'" content="'.$m['value'].'">'."\n";
             }
         }
         if(!empty(self::$favicon)) {
-            $html .= '    <link rel="shortcut icon" href="'.self::$favicon.'" />'."\n";
+            $html .= '    <link rel="shortcut icon" href="'.self::$favicon.'">'."\n";
         }
         $html .= '    <title>'.$title.'</title>'."\n";
         $html .= '    '.self::getAssetHTML()."\n";
