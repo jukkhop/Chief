@@ -89,7 +89,7 @@ class Layout
         );
     }
 
-    public static function css($path, $priority = 1)
+    public static function css($path, $priority = 0)
     {
         if(is_array($path)) {
             $defaults = array(
@@ -122,7 +122,7 @@ class Layout
         }
     }
 
-    public static function js($path, $priority = 1)
+    public static function js($path, $priority = 0)
     {
         if(is_string($priority) && (int)$priority !== $priority) {
             foreach(func_get_args() as $path) {
@@ -170,7 +170,7 @@ class Layout
     {
         $assets = array();
         foreach(self::$assets as $type => $priorities) {
-            krsort($priorities);
+            ksort($priorities);
             foreach($priorities as $priority => $fragments) {
                 foreach($fragments as $fragment) {
                     $assets[] = $fragment;
