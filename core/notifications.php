@@ -17,7 +17,7 @@ class Notifications
         if(!empty($notifications)) {
             $html = '<div class="notifications">';
             foreach($notifications as $notification) {
-                $html .= '<div class="alert '.$notification->class.'"><a class="close" data-dismiss="alert" href="#">&times;</a>'.$notification->text.'</div>';
+                $html .= '<div class="alert '.$notification->class.'"><a class="close" data-dismiss="alert" href="#"><i class="icon-remove"></i></a>'.$notification->text.'</div>';
             }
             $html .= '</div>';
         }
