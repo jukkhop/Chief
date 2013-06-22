@@ -6,6 +6,7 @@ class Layout
     private $header = false;
     private $footer = false;
     private $enabled = true;
+    private static $isWidget = false;
 
     private static $assets;
     private static $title;
@@ -42,12 +43,12 @@ class Layout
 
     public function getHeader()
     {
-        return $this->enabled ? $this->header : false;
+        return $this->enabled && !self::$isWidget ? $this->header : false;
     }
 
     public function getFooter()
     {
-        return $this->enabled ? $this->footer : false;
+        return $this->enabled && !self::$isWidget ? $this->footer : false;
     }
 
     public function enable()
@@ -63,6 +64,10 @@ class Layout
     public function isEnabled()
     {
         return $this->enabled;
+    }
+    
+    public function isWidget() {
+        return !!self::$isWidget;
     }
 
     public static function title($title)
@@ -190,7 +195,9 @@ class Layout
         global $db;
         global $layout;
         try {
+            self::$isWidget = true;
             Core::init($module, $method, null, $db, $layout);
+            self::$isWidget = false;
         } catch(Exception $e) {
             return false;
         }
