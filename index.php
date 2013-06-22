@@ -50,7 +50,7 @@ $directory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 $module = empty($module) ? DEFAULT_MODULE : $module;
 $method = empty($method) ? 'main' : $method;
 
-if(!method_exists('Chief\\'.$module, $method)) {
+if(!method_exists('Chief\\'.$module, $method) && !method_exists('Chief\\'.$module, '__call')) {
     $arguments = array('Page '.$module.'/'.$method.' does not exist.');
     $module = 'error';
     $method = 'main';
@@ -62,13 +62,24 @@ define('LAYOUT_FOOTER', 'layout/footer.php');
 $layout->setHeader(LAYOUT_HEADER);
 $layout->setFooter(LAYOUT_FOOTER);
 
+require_once('system/init.php');
+
 define('MODULE', $module);
 define('METHOD', $method);
-
-require_once('system/init.php');
 
 try {
     Core::init($module, $method, $arguments, $db, $layout);
 } catch(Exception $e) {
-    die($e->getMessage());
+	Core::init('error', 'main', [$e->getMessage()], $db, $layout);
+}
+
+# Save the redirect URL for more stable redirecting
+if($module !== 'error') {
+	if(isset($_SERVER['REDIRECT_URL'])) {
+		$_SESSION['REDIRECT_URL'] = $_SERVER['REDIRECT_URL'];
+	} elseif(isset($_SERVER['SCRIPT_URL'])) {
+		$_SESSION['REDIRECT_URL'] = $_SERVER['SCRIPT_URL'];
+	} else {
+		$_SESSION['REDIRECT_URL'] = BASE_DIR;
+	}
 }
