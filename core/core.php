@@ -13,6 +13,10 @@ class Core
         $controller = new $fully_qualified_name($db, $layout);
         $controller->setModule($module);
         $controller->setMethod($method);
+        if(!method_exists($fully_qualified_name, $method)) {
+        	$arguments = [$method, $arguments];
+        	$method = '__call';
+        }
         $function = new \ReflectionMethod($fully_qualified_name, $method);
         $function->invokeArgs($controller, empty($arguments) ? [] : $arguments);
     }
