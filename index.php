@@ -56,11 +56,8 @@ if(!method_exists('Chief\\'.$module, $method) && !method_exists('Chief\\'.$modul
     $method = 'main';
 }
 
-define('LAYOUT_HEADER', 'layout/header.php');
-define('LAYOUT_FOOTER', 'layout/footer.php');
-
-$layout->setHeader(LAYOUT_HEADER);
-$layout->setFooter(LAYOUT_FOOTER);
+$layout->setHeader('layout/header.php');
+$layout->setFooter('layout/footer.php');
 
 require_once('system/init.php');
 
