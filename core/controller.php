@@ -13,24 +13,8 @@ class Controller extends Core
         $this->db       = $db;
         $this->layout   = $layout;
         
-        try    {
-            if(!AJAX_CALL) {
-                # Save the redirect URL for more stable redirecting
-                if($this->module !== 'error') {
-                    if(isset($_SERVER['REDIRECT_URL'])) {
-                        $_SESSION['REDIRECT_URL'] = $_SERVER['REDIRECT_URL'];
-                    } elseif(isset($_SERVER['SCRIPT_URL'])) {
-                        $_SESSION['REDIRECT_URL'] = $_SERVER['SCRIPT_URL'];
-                    } else {
-                        $_SESSION['REDIRECT_URL'] = BASE_DIR;
-                    }
-                }
-            } else {
-                # If this is an AJAX call, disable the layout (show only the content)
-                $this->layout->disable();
-            }
-        } catch(Exception $e) {
-            throw $e;
+		if(AJAX_CALL) {
+			$this->layout->disable();
         }
     }
     
