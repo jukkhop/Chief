@@ -153,6 +153,14 @@ class Table extends Plugin
         return $this;
     }
 
+    public function hidden($bool = true) 
+    {
+        if($this->active !== false) {
+            $this->columns[$this->active]->hidden = !!$bool;
+        }
+        return $this;
+    }
+
     public function dateFormat($format) 
     {
         $this->transform(function($value) use ($format) {
@@ -234,7 +242,7 @@ class Table extends Plugin
     public function render() 
     {
         if(empty($this->data)) {
-            $this->rendered = sprintf('<p class="info">%s</p>', $this->emptyMessage);
+            $this->rendered = sprintf('<div class="no-rows alert alert-info">%s</div>', $this->emptyMessage);
         } else {
             $id = is_null($this->id) ? '' : ' id="'.$this->id.'"';
             $table = sprintf('<table%s class="table">', $id);        
@@ -245,7 +253,7 @@ class Table extends Plugin
             }
 
             if(!empty($this->actions)) {
-                $table .= sprintf('<th class="actions" style="width: %dpx"></th>', count($this->actions) * 25);
+                $table .= sprintf('<th class="actions" style="width: %dpx"></th>', count($this->actions) * 20);
             }
 
             if($this->sort_direction == $this->sort_direction_asc) $this->sort_direction = 'ASC';
@@ -254,6 +262,7 @@ class Table extends Plugin
             foreach($this->columns as $name => $column) {                
                 $label = $column->label;                
                 $class = array();
+                $hidden = isset($column->hidden) && $column->hidden;
 
                 if($this->sort_column !== false) {
                     $sort_class = array();
@@ -272,7 +281,7 @@ class Table extends Plugin
                     $sort_direction_show = $sort_direction == 'ASC' ? $this->sort_direction_asc : $this->sort_direction_desc;
 
                     $href  = str_replace(array('{sort_column}', '{sort_direction}'), array($name, $sort_direction_show), $this->sort_template);
-                    $label = sprintf('<a href="%s">%s</a>', $href, $label);
+                    $label = sprintf('<a href="%s">%s%s</a>', $href, $label, in_array('sort-active', $sort_class) ? '<i class="icon-caret-'.(in_array('sort-asc', $sort_class) ? 'up' : 'down').'">' : '');
                     $class[] = implode(' ', $sort_class);
                 }
 
@@ -288,6 +297,10 @@ class Table extends Plugin
                     if(!is_callable($column->css)) {
                         $css .= $column->css;
                     }
+                }
+                
+                if($hidden) {
+                	$css .= 'display: none;';
                 }
 
                 if(!empty($css)) {
@@ -330,7 +343,8 @@ class Table extends Plugin
                 }
 
                 foreach($this->columns as $name => $column) {
-
+                	
+                	$hidden = isset($column->hidden) && $column->hidden;
                     $value = isset($row->$name) ? $row->$name : '';
 
                     if(isset($column->tally)) {
@@ -346,15 +360,18 @@ class Table extends Plugin
                     $value = $this->formatString($value, $row);
 
                     $css = '';
+                    if($hidden) {
+                    	$css = 'display: none;';
+                    }
                     if(isset($column->css)) {
                         if(is_callable($column->css)) {
                             $func = $column->css;
-                            $css = ' style="'.$func($value, $row).'"';
+                            $css .= $func($value, $row);
                         } else {
-                            $css = ' style="'.$column->css.'"';
+                        	$css .= $column->css;
                         }
                     }
-
+					$css = ' style="'.$css.'"';
                     $table .= sprintf('<td%s>%s</td>', $css, $value);
                     $i++;
                 }

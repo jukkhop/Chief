@@ -202,7 +202,8 @@ class Form extends Plugin
             'label' => $label,
             'generator' => function($field) {
                 $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
-                return sprintf('<input id="%s" type="text" class="date" name="%s" value="%s"%s />', $field['name'], $field['name'], Form::escape($field['value']), $disabled);
+                $width = is_null($field['width']) ? '' : sprintf(' style="width: %s;"', is_numeric($field['width']) ? $field['width'].'px' : $field['width']);
+                return sprintf('<input id="%s" type="text" class="date" name="%s" value="%s"%s%s />', $field['name'], $field['name'], Form::escape($field['value']), $disabled, $width);
             }
         );
         return $this;
@@ -426,7 +427,7 @@ class Form extends Plugin
             'label' => $html,
             'no_label' => true,
             'generator' => function($field) {
-                return sprintf('<span id="%s">%s</span>', $field['name'], $field['label']);
+                return $field['label'];
             }
         );
         return $this;
@@ -543,7 +544,7 @@ class Form extends Plugin
     public function dateFormat($format) 
     {
         $this->transform(function($value) use ($format) {
-            return empty($value) ? '' : date($format, strtotime($value));
+            return !strtotime($value) ? $value : date($format, strtotime($value));
         });
         return $this;
     }
@@ -563,12 +564,25 @@ class Form extends Plugin
             'className' => null
         );
         
+        $field = array_merge($field_hull, $this->fields[$name]);
         $error = isset($this->errors[$name]) ? sprintf('<p class="error">%s</p>', $this->errors[$name]) : null;
+        $label = in_array($field['type'], array('submit', 'button', 'custom')) || ($field['type'] == 'checkbox' && is_null($field['options'])) ? null : $field['label'];
+        if(isset($field['no_label']) && $field['no_label']) {
+            $label = null;
+        }
 
-        $html = '<li'.(empty($error) ? '' : ' class="error"').'>';
+        $li_class = [];
+        if(is_null($label)) {
+        	$li_class[] = 'no-label';
+        }
+        
+        if(!empty($error)) {
+        	$li_class[] = 'error';
+        }
+        
+        $html = '<li'.(empty($li_class) ? '' : ' class="'.implode(' ', $li_class).'"').'>';
         $class = array();
 
-        $field = array_merge($field_hull, $this->fields[$name]);
         $value = isset($this->values[$name]) ? $this->values[$name] : null;
 
         if(isset($this->transforms[$name])) {
@@ -587,12 +601,6 @@ class Form extends Plugin
                 }
             }                        
             $value = $_values;
-        }
-
-        $label = in_array($field['type'], array('submit', 'button', 'custom')) || ($field['type'] == 'checkbox' && is_null($field['options'])) ? "&nbsp;" : $field['label'];
-
-        if(isset($field['no_label']) && $field['no_label']) {
-            $label = null;
         }
 
         $field['width'] = isset($field['width']) ? $field['width'] : null;
@@ -812,15 +820,15 @@ class Form extends Plugin
             }
 
             if($field['type'] == 'datetime') {
-                if(!DateTime::createFromFormat('j.n.Y H:i', trim($this->values[$name]))) {
+                if(!empty($this->values[$name]) && !\DateTime::createFromFormat('j.n.Y H:i', trim($this->values[$name]))) {
                     $this->errors[$name] = 'Tarkista päivämäärän muoto.';
                 }
             }
 
             if($field['type'] == 'date') {
-                if(!Common::parse_date($this->values[$name])) {
+                if(!empty($this->values[$name]) && !Common::parse_date($this->values[$name])) {
                     $this->errors[$name] = 'Tarkista päivämäärän muoto.';
-                }            
+                }
             }
 
             if(isset($field['required']) && $field['required'] && (!isset($this->values[$name]) || empty($this->values[$name])) && $field['type'] != 'file') {
