@@ -76,12 +76,15 @@ class Database
                 if(isset($trace[1])) {
                     echo 'Called in '.$trace[1]['file'].' on line '.$trace[1]['line']."\n";
                 }
+                return false;
             }
         } catch (\PDOException $e) {
-            echo $e->getMessage()."\n";
+			echo $e->getMessage()."\n\n";
+			echo $sql."\n\n";
             $trace = $e->getTrace();
             if(isset($trace[1])) {
                 echo 'Called in '.$trace[1]['file'].' on line '.$trace[1]['line']."\n";
+                return false;
             }
         }
         return $statement;

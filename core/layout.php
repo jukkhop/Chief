@@ -3,16 +3,16 @@ namespace Chief;
 
 class Layout
 {    
-    private $header = false;
-    private $footer = false;
-    private $enabled = true;
-    private static $isWidget = false;
+    protected $header = false;
+    protected $footer = false;
+    protected $enabled = true;
+    protected static $isWidget = false;
 
-    private static $assets;
-    private static $title;
-    private static $keywords;
-    private static $favicon;
-    private static $meta;
+    protected static $assets;
+    protected static $title;
+    protected static $keywords;
+    protected static $favicon;
+    protected static $meta;
 
     public function __construct()
     {
@@ -196,7 +196,7 @@ class Layout
         global $layout;
         try {
             self::$isWidget = true;
-            Core::init($module, $method, null, $db, $layout);
+            Core::init($module, $method, $args, $db, $layout);
             self::$isWidget = false;
         } catch(Exception $e) {
             return false;
