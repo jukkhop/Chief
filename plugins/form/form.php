@@ -156,8 +156,9 @@ class Form extends Plugin
             'name' => $name,
             'type' => 'hidden',
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
-                return sprintf('<input type="hidden" name="%s" value="%s"%s />', $field['name'], Form::escape($field['value']), $disabled);
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
+                return sprintf('<input type="hidden" name="%s" value="%s"%s%s>', $field['name'], Form::escape($field['value']), $disabled, $readonly);
             }
         );
         return $this;
@@ -185,9 +186,10 @@ class Form extends Plugin
             'type' => 'text',
             'label' => $label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
                 $width = is_null($field['width']) ? '' : sprintf(' style="width: %s;"', is_numeric($field['width']) ? $field['width'].'px' : $field['width']);
-                return sprintf('<input id="%s" type="text" name="%s" value="%s"%s%s />', $field['name'], $field['name'], Form::escape($field['value']), $disabled, $width);
+                return sprintf('<input id="%s" type="text" name="%s" value="%s"%s%s%s>', $field['name'], $field['name'], Form::escape($field['value']), $disabled, $readonly, $width);
             }
         );
         return $this;
@@ -201,9 +203,10 @@ class Form extends Plugin
             'type' => 'date',
             'label' => $label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
                 $width = is_null($field['width']) ? '' : sprintf(' style="width: %s;"', is_numeric($field['width']) ? $field['width'].'px' : $field['width']);
-                return sprintf('<input id="%s" type="text" class="date" name="%s" value="%s"%s%s />', $field['name'], $field['name'], Form::escape($field['value']), $disabled, $width);
+                return sprintf('<input id="%s" type="text" class="date" name="%s" value="%s"%s%s%s>', $field['name'], $field['name'], Form::escape($field['value']), $disabled, $readonly, $width);
             }
         );
         return $this;
@@ -217,28 +220,12 @@ class Form extends Plugin
             'type' => 'datetime',
             'label' => $label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
-                return sprintf('<input id="%s" type="text" class="datetime" name="%s" value="%s"%s />', $field['name'], $field['name'], Form::escape($field['value']), $disabled);
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
+                return sprintf('<input id="%s" type="text" class="datetime" name="%s" value="%s"%s%s>', $field['name'], $field['name'], Form::escape($field['value']), $disabled, $readonly);
             }
         );
         return $this;
-    }
-
-    public function getDatetime($name, $format = 'j.n.Y H:i') 
-    {
-        $field = $this->fields[$name];
-        $datetime = false;
-
-        if($field['type'] == 'datetime') {
-            $value = DateTime::createFromFormat($format, trim($this->values[$name]));
-            if(!$value) {
-                $datetime = false;
-            } else {
-                $datetime = $value->format('Y-m-d H:i:s');
-            }
-        }
-
-        return $datetime;
     }
 
     public function password($name, $label) 
@@ -249,8 +236,9 @@ class Form extends Plugin
             'type' => 'password',
             'label' => $label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
-                return sprintf('<input id="%s" type="password" name="%s" value="%s"%s />', $field['name'], $field['name'], Form::escape($field['value']), $disabled);
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
+                return sprintf('<input id="%s" type="password" name="%s" value="%s"%s%s>', $field['name'], $field['name'], Form::escape($field['value']), $disabled, $readonly);
             }
         );
         return $this;
@@ -265,9 +253,10 @@ class Form extends Plugin
             'type' => 'file',
             'label' => $label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
                 $multiple = substr($field['name'], -2) == '[]' ? ' multiple' : '';
-                return sprintf('<input id="%s"%s type="file" name="%s"%s />', $field['name'], $multiple, $field['name'], $disabled);
+                return sprintf('<input id="%s"%s type="file" name="%s"%s%s>', $field['name'], $multiple, $field['name'], $disabled, $readonly);
             }
         );
         return $this;
@@ -283,9 +272,10 @@ class Form extends Plugin
             'options' => $options,
             'no_keys' => $no_keys,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
                 $width = is_null($field['width']) ? '' : sprintf(' style="width: %s;"', is_numeric($field['width']) ? $field['width'].'px' : $field['width']);
-                $select = sprintf('<select id="%s" name="%s"%s%s>', $field['name'], $field['name'], $disabled, $width);
+                $select = sprintf('<select id="%s" name="%s"%s%s%s>', $field['name'], $field['name'], $disabled, $readonly, $width);
                 if(is_array($field['options']) && !empty($field['options'])) {
                     foreach($field['options'] as $k => $v) {
                         if($field['no_keys']) $k = $v;
@@ -309,11 +299,12 @@ class Form extends Plugin
             'label' => $label,
             'options' => $options,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
                 $checkbox = '<ul>';                
                 if(is_null($field['options'])) {
                     $checked = (int)$field['value'] === 1 || $field['value'] === 'on' ? ' checked="checked"' : '';
-                    $checkbox .= sprintf('<li><label><input type="checkbox" name="%s"%s%s />%s</label></li>', $field['name'], $checked, $disabled, $field['label']);
+                    $checkbox .= sprintf('<li><label><input type="checkbox" name="%s"%s%s%s>%s</label></li>', $field['name'], $checked, $disabled, $readonly, $field['label']);
                 } elseif(is_array($field['options']) && !empty($field['options'])) {
                     foreach($field['options'] as $k => $v) {
                         if(is_array($field['value'])) {
@@ -321,7 +312,7 @@ class Form extends Plugin
                         } else {
                             $checked = $k == $field['value'] ? ' checked="checked"' : '';
                         }
-                        $checkbox .= sprintf('<li><label><input type="checkbox" name="%s" value="%s"%s />%s</label></li>', $field['name'], $k, $checked, $v);
+                        $checkbox .= sprintf('<li><label><input type="checkbox" name="%s" value="%s"%s>%s</label></li>', $field['name'], $k, $checked, $v);
                     }
                 }
                 $checkbox .= '</ul>';
@@ -340,12 +331,13 @@ class Form extends Plugin
             'label' => $label,
             'options' => $options,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
                 $radio = '<ul>';
                 if(is_array($field['options']) && !empty($field['options'])) {
                     foreach($field['options'] as $k => $v) {
                         $checked = $k == $field['value'] ? ' checked="checked"' : '';
-                        $radio .= sprintf('<li><label><input type="radio" name="%s"%s%s value="%s" />%s</label></li>', $field['name'], $checked, $disabled, $k, $v);
+                        $radio .= sprintf('<li><label><input type="radio" name="%s"%s%s%s value="%s">%s</label></li>', $field['name'], $checked, $disabled, $readonly, $k, $v);
                     }
                 }
                 $radio .= '</ul>';
@@ -363,9 +355,10 @@ class Form extends Plugin
             'type' => 'textarea',
             'label' => $label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
                 $width = is_null($field['width']) ? '' : sprintf(' style="width: %s;"', is_numeric($field['width']) ? $field['width'].'px' : $field['width']);
-                return sprintf('<textarea id="%s" name="%s"%s%s>%s</textarea>', $field['name'], $field['name'], $width, $disabled, Form::escape($field['value']));
+                return sprintf('<textarea id="%s" name="%s"%s%s%s>%s</textarea>', $field['name'], $field['name'], $width, $disabled, $readonly, Form::escape($field['value']));
             }
         );
         return $this;
@@ -483,6 +476,11 @@ class Form extends Plugin
         return $this->updateActiveField('disabled', !!$bool);
     }
 
+    public function readonly($bool = true) 
+    {
+        return $this->updateActiveField('readonly', !!$bool);
+    }
+
     public function required($bool = true) 
     {
         return $this->updateActiveField('required', !!$bool);
@@ -559,6 +557,7 @@ class Form extends Plugin
             'required' => false,
             'width' => null,
             'disabled' => false,
+            'readonly' => false,
             'regex' => null,
             'info' => null,
             'className' => null
