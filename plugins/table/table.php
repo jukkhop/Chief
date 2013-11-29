@@ -281,7 +281,7 @@ class Table extends Plugin
                     $sort_direction_show = $sort_direction == 'ASC' ? $this->sort_direction_asc : $this->sort_direction_desc;
 
                     $href  = str_replace(array('{sort_column}', '{sort_direction}'), array($name, $sort_direction_show), $this->sort_template);
-                    $label = sprintf('<a href="%s">%s%s</a>', $href, $label, in_array('sort-active', $sort_class) ? '<i class="icon-caret-'.(in_array('sort-asc', $sort_class) ? 'up' : 'down').'">' : '');
+                    $label = sprintf('<a href="%s">%s%s</a>', $href, $label, in_array('sort-active', $sort_class) ? '<i class="fa fa-caret-'.(in_array('sort-asc', $sort_class) ? 'up' : 'down').'">' : '');
                     $class[] = implode(' ', $sort_class);
                 }
 
@@ -336,7 +336,7 @@ class Table extends Plugin
                         $url = $this->formatString($action->url, $row);
                         $condition = $action->condition;
                         if($condition($row)) {                        
-                            $table .= sprintf('<a href="%s%s"><i class="icon-%s"></i></a>', BASE_DIR, $url, $type);
+                            $table .= sprintf('<a href="%s%s"><i class="fa fa-%s"></i></a>', BASE_DIR, $url, $type);
                         }
                     }
                     $table .= '</td>';
