@@ -50,16 +50,21 @@ $directory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 $module = empty($module) ? DEFAULT_MODULE : $module;
 $method = empty($method) ? 'main' : $method;
 
+$layout_folder = 'layout/';
+$header = 'layout/header.php';
+$footer = 'layout/footer.php';
+
+require_once('system/init.php');
+
 if(!method_exists('Chief\\'.$module, $method) && !method_exists('Chief\\'.$module, '__call')) {
     $arguments = array('Page '.$module.'/'.$method.' does not exist.');
     $module = 'error';
     $method = 'main';
 }
 
-$layout->setHeader('layout/header.php');
-$layout->setFooter('layout/footer.php');
-
-require_once('system/init.php');
+$layout->setFolder($layout_folder);
+$layout->setHeader($header);
+$layout->setFooter($footer);
 
 define('MODULE', $module);
 define('METHOD', $method);
