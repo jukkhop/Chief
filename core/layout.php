@@ -13,6 +13,7 @@ class Layout
     protected static $keywords;
     protected static $favicon;
     protected static $meta;
+	protected static $webfonts;
 
     public function __construct()
     {
@@ -93,6 +94,13 @@ class Layout
             'keyname' => $keyname
         );
     }
+	
+	public static function webfont($font, $weights = null) {
+		self::$webfonts[] = [
+			'font' => $font,
+			'weights' => $weights
+		];
+	}
 
     public static function css($path, $priority = 1)
     {
@@ -164,6 +172,19 @@ class Layout
             $html .= '    <link rel="shortcut icon" href="'.self::$favicon.'">'."\n";
         }
         $html .= '    <title>'.$title.'</title>'."\n";
+		
+		if(!empty(self::$webfonts)) {
+			$fonts = array();
+			foreach(self::$webfonts as $webfont) {
+				$weights = null;
+				if(!empty($webfont['weights'])) {
+					$weights = is_array($webfont['weights']) ? implode(',', $webfont['weights']) : $webfont['weights'];
+				}
+				$fonts[] = urlencode($webfont['font']).(empty($weights) ? null : ':'.$weights);
+			}
+			$html .= '	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family='.implode('|', $fonts).'">'."\n";
+		}
+		
         $html .= '    '.self::getAssetHTML()."\n";
         $html .= '    <script type="text/javascript">var BASE_DIR = \''.BASE_DIR.'\';</script>'."\n";
         $html .= '</head>'."\n";
