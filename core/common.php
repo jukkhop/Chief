@@ -138,4 +138,13 @@ class Common
         }
         return $defaults;
     }
+    
+    public static function convertDate($date, $from_format, $to_format) {
+    	$datetime = DateTime::createFromFormat($from_format, $date);
+    	$out = false;
+    	if($datetime) {
+    		$out = $datetime->format($to_format);
+    	}
+    	return $out;
+    }
 }

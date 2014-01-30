@@ -157,8 +157,7 @@ class Form extends Plugin
             'type' => 'hidden',
             'generator' => function($field) {
                 $disabled = $field['disabled'] ? ' disabled' : '';
-                $readonly = $field['readonly'] ? ' readonly' : '';
-                return sprintf('<input type="hidden" name="%s" value="%s"%s%s>', $field['name'], Form::escape($field['value']), $disabled, $readonly);
+                return sprintf('<input type="hidden" name="%s" value="%s"%s>', $field['name'], Form::escape($field['value']), $disabled);
             }
         );
         return $this;
@@ -579,6 +578,8 @@ class Form extends Plugin
         	$li_class[] = 'error';
         }
         
+        $li_class[] = $field['type'];
+        
         $html = '<li'.(empty($li_class) ? '' : ' class="'.implode(' ', $li_class).'"').'>';
         $class = array();
 
@@ -706,8 +707,6 @@ class Form extends Plugin
             $form .= $field['generator']($field, $values);
         }
         
-        $form .= '<ul>';
-
         # Insert visible fields
         foreach($this->fields as $name => $field) {
 
@@ -717,32 +716,36 @@ class Form extends Plugin
 
             if($field['type'] == 'fieldset') {                
                 $className = !is_null($field['className']) ? sprintf(' class="%s"', $field['className']) : '';
-
                 if($fieldset_open) {
-                    $form .= '</fieldset>';
-                    $fieldset_open = false;
+                    $form .= '</ul></fieldset>';
                 }
-
+                if($ul_open) {
+                	$form .= '</ul>';
+                }
                 $form .= sprintf('<fieldset id="%s"%s>', Common::slug($field['label']), $className);
-                $form .= sprintf('<legend>%s</legend>', $field['label']);
-
+                $form .= sprintf('<span class="legend">%s</span><ul>', $field['label']);
                 $fieldset_open = true;
+				$ul_open = true;
                 continue;
-            }
-
-            if($field['type'] == 'fieldsetClose' && $fieldset_open) {
-                $form .= '</fieldset>';
+            } else if($field['type'] == 'fieldsetClose' && $fieldset_open) {
+                $form .= '</ul></fieldset>';
+				$ul_open = false;
                 continue;
+            } else {
+            	if(!$ul_open) {
+            		$form .= '<ul>';
+            		$ul_open = true;
+            	}
             }
 
             $form .= $this->render_field($name);
-        }        
-
+        }
+        
+        $form .= '</ul>';
         if($fieldset_open) {
             $form .= '</fieldset>';
         }
 
-        $form .= '</ul>';
         $form .= '</form>';
         $form .= '<div style="clear: both;"></div>';
 
@@ -825,7 +828,7 @@ class Form extends Plugin
             }
 
             if($field['type'] == 'date') {
-                if(!empty($this->values[$name]) && !Common::parse_date($this->values[$name])) {
+                if(!empty($this->values[$name]) && !\DateTime::createFromFormat('j.n.Y', $this->values[$name])) {
                     $this->errors[$name] = 'Tarkista päivämäärän muoto.';
                 }
             }

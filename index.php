@@ -50,9 +50,7 @@ $directory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 $module = empty($module) ? DEFAULT_MODULE : $module;
 $method = empty($method) ? 'main' : $method;
 
-$layout_folder = 'layout/';
-$header = 'layout/header.php';
-$footer = 'layout/footer.php';
+Layout::setLayoutPath('layout/');
 
 require_once('system/init.php');
 
@@ -61,13 +59,6 @@ if(!method_exists('Chief\\'.$module, $method) && !method_exists('Chief\\'.$modul
     $module = 'error';
     $method = 'main';
 }
-
-$layout->setFolder($layout_folder);
-$layout->setHeader($header);
-$layout->setFooter($footer);
-
-define('MODULE', $module);
-define('METHOD', $method);
 
 try {
     Core::init($module, $method, $arguments, $db, $layout);
