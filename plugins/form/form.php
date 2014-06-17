@@ -18,13 +18,13 @@ class Form extends Plugin
     private $hasFile = false;
     private $active;
 
-    public static function escape($str) 
+    public static function escape($str)
     {
         $str = html_entity_decode($str);
         return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
     }
 
-    public function __toString() 
+    public function __toString()
     {
         if($this->inlineMode) {
             return $this->render_field($this->active);
@@ -36,35 +36,35 @@ class Form extends Plugin
         }
     }
 
-    public function isSent() 
+    public function isSent()
     {
         return $_SERVER['REQUEST_METHOD'] == 'POST';
     }
 
-    public function getRendered() 
+    public function getRendered()
     {
         return $this->rendered;
     }
 
-    public function setInlineMode($bool) 
+    public function setInlineMode($bool)
     {
         $this->inlineMode = !!$bool;
         return $this;
     }
 
-    public function setClassName($className) 
+    public function setClassName($className)
     {
         $this->className = $className;
         return $this;
     }
 
-    public function setMethod($method) 
+    public function setMethod($method)
     {
         $this->method = $method;
         return $this;
     }
 
-    public function setAction($action) 
+    public function setAction($action)
     {
         if(strpos($action, 'http') === false && $action[0] != '/') {
             $action = BASE_DIR.$action;
@@ -73,7 +73,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function setValues($values, $prefix = null) 
+    public function setValues($values, $prefix = null)
     {
         $values = (array)$values;
         $values = self::flatten(null, $values);
@@ -84,13 +84,13 @@ class Form extends Plugin
         return $this;
     }
 
-    public function setValue($key, $value) 
+    public function setValue($key, $value)
     {
         $this->values[is_numeric($key) ? (int)$key : $key] = $value;
         return $this;
     }
 
-    public function setReadOnly($bool) 
+    public function setReadOnly($bool)
     {
         $this->readOnly = !!$bool;
     }
@@ -121,14 +121,14 @@ class Form extends Plugin
         return $return;
     }
 
-    public function setErrors($errors) 
+    public function setErrors($errors)
     {
         $errors = self::flatten(null, $errors);
         $this->errors = (array)$errors;
         return $this;
     }
 
-    public function fieldset($legend) 
+    public function fieldset($legend)
     {
         $name = uniqid();
         $this->active = $name;
@@ -139,7 +139,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function fieldsetClose() 
+    public function fieldsetClose()
     {
         $name = uniqid();
         $this->active = $name;
@@ -149,7 +149,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function hidden($name) 
+    public function hidden($name)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -164,7 +164,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function span($name, $label = '') 
+    public function span($name, $label = '')
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -178,7 +178,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function text($name, $label = '') 
+    public function text($name, $label = '')
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -195,7 +195,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function date($name, $label) 
+    public function date($name, $label)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -212,7 +212,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function datetime($name, $label) 
+    public function datetime($name, $label)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -228,7 +228,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function password($name, $label) 
+    public function password($name, $label)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -244,7 +244,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function file($name, $label) 
+    public function file($name, $label)
     {
         $this->hasFile = true;
         $this->active = $name;
@@ -262,7 +262,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function select($name, $label, $options, $no_keys = false) 
+    public function select($name, $label, $options, $no_keys = false)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -291,7 +291,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function checkbox($name, $label, $options = null) 
+    public function checkbox($name, $label, $options = null)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -323,7 +323,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function radio($name, $label, $options) 
+    public function radio($name, $label, $options)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -348,7 +348,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function textarea($name, $label) 
+    public function textarea($name, $label)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -365,7 +365,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function wysiwyg($name, $label) 
+    public function wysiwyg($name, $label)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -382,7 +382,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function button($name, $label) 
+    public function button($name, $label)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -398,7 +398,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function submit($name, $label, $no_label = false) 
+    public function submit($name, $label, $no_label = false)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -415,7 +415,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function custom($name, $html) 
+    public function custom($name, $html)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -430,7 +430,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function div($name, $label) 
+    public function div($name, $label)
     {
         $this->active = $name;
         $this->fields[$name] = array(
@@ -447,7 +447,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function width($width) 
+    public function width($width)
     {
         return $this->updateActiveField('width', $width);
     }
@@ -460,63 +460,63 @@ class Form extends Plugin
         return rtrim($html);
     }
 
-    public function data($data) 
+    public function data($data)
     {
         return $this->updateActiveField('data', $data);
     }
 
-    public function append($append) 
+    public function append($append)
     {
         return $this->updateActiveField('append', $append);
     }
 
-    public function prepend($prepend) 
+    public function prepend($prepend)
     {
         return $this->updateActiveField('prepend', $prepend);
     }
 
-    public function disabled($bool = true) 
+    public function disabled($bool = true)
     {
         return $this->updateActiveField('disabled', !!$bool);
     }
     
-    public function readonly($bool = true) 
+    public function readonly($bool = true)
     {
         return $this->updateActiveField('readonly', !!$bool);
     }
 
-    public function required($bool = true) 
+    public function required($bool = true)
     {
         return $this->updateActiveField('required', !!$bool);
     }
 
-    public function onlyImage($bool = true) 
+    public function onlyImage($bool = true)
     {
         return $this->updateActiveField('onlyImage', !!$bool);
     }
 
-    public function regex($regex) 
+    public function regex($regex)
     {
         return $this->updateActiveField('regex', $regex);
     }
 
-    public function info($info) 
+    public function info($info)
     {
         return $this->updateActiveField('info', $info);
     }
 
-    public function className($className) 
+    public function className($className)
     {
         return $this->updateActiveField('className', $className);
     }
 
-    public function value($value) 
+    public function value($value)
     {
         $this->values[$this->active] = $value;
         return $this;
     }
 
-    public function after($_field) 
+    public function after($_field)
     {
 
         $_fields = array();
@@ -534,7 +534,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function transform($function) 
+    public function transform($function)
     {
         if(!isset($this->transforms[$this->active])) {
             $this->transforms[$this->active] = array();
@@ -543,7 +543,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function dateFormat($format) 
+    public function dateFormat($format)
     {
         $this->transform(function($value) use ($format) {
             return !strtotime($value) ? $value : date($format, strtotime($value));
@@ -551,7 +551,7 @@ class Form extends Plugin
         return $this;
     }
 
-    public function render_field($name) 
+    public function render_field($name)
     {        
         $field_hull = array(
             'name' => null,
@@ -666,7 +666,7 @@ class Form extends Plugin
         return $html;
     }
 
-    public function render() 
+    public function render()
     {        
         $fieldset_open = false;
         $ul_open       = false;
