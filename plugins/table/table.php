@@ -96,7 +96,8 @@ class Table extends Plugin
             'url' => $url,
             'condition' => function() {
                 return true;
-            }
+            },
+            'confirm' => false
         );
         return $this;
     }
@@ -105,6 +106,14 @@ class Table extends Plugin
     {
         if($this->active_action) {
             $this->actions[$this->active_action]->condition = $condition;
+        }
+        return $this;
+    }
+
+    public function confirm($message) 
+    {
+        if($this->active_action) {
+            $this->actions[$this->active_action]->confirm = $message;
         }
         return $this;
     }
@@ -300,7 +309,7 @@ class Table extends Plugin
                 }
                 
                 if($hidden) {
-                	$css .= 'display: none;';
+                    $css .= 'display: none;';
                 }
 
                 if(!empty($css)) {
@@ -335,16 +344,20 @@ class Table extends Plugin
                     foreach($this->actions as $type => $action) {
                         $url = $this->formatString($action->url, $row);
                         $condition = $action->condition;
-                        if($condition($row)) {                        
-                            $table .= sprintf('<a href="%s%s"><i class="fa fa-%s"></i></a>', BASE_DIR, $url, $type);
+                        if($condition($row)) {
+                            $confirm = null;
+                            if($action->confirm) {
+                                $confirm = " onclick=\"return confirm('".$action->confirm."');\"";
+                            }
+                            $table .= sprintf('<a href="%s%s"%s><i class="fa fa-%s"></i></a>', BASE_DIR, $url, $confirm, $type);
                         }
                     }
                     $table .= '</td>';
                 }
 
                 foreach($this->columns as $name => $column) {
-                	
-                	$hidden = isset($column->hidden) && $column->hidden;
+                    
+                    $hidden = isset($column->hidden) && $column->hidden;
                     $value = isset($row->$name) ? $row->$name : '';
 
                     if(isset($column->tally)) {
@@ -361,17 +374,17 @@ class Table extends Plugin
 
                     $css = '';
                     if($hidden) {
-                    	$css = 'display: none;';
+                        $css = 'display: none;';
                     }
                     if(isset($column->css)) {
                         if(is_callable($column->css)) {
                             $func = $column->css;
                             $css .= $func($value, $row);
                         } else {
-                        	$css .= $column->css;
+                            $css .= $column->css;
                         }
                     }
-					$css = ' style="'.$css.'"';
+                    $css = ' style="'.$css.'"';
                     $table .= sprintf('<td%s>%s</td>', $css, $value);
                     $i++;
                 }
