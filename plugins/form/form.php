@@ -576,15 +576,15 @@ class Form extends Plugin
 
         $li_class = [];
         if(is_null($label)) {
-        	$li_class[] = 'no-label';
+            $li_class[] = 'no-label';
         }
         
         if(!empty($error)) {
-        	$li_class[] = 'error';
+            $li_class[] = 'error';
         }
         
         if(isset($field['className'])) {
-        	$li_class[] = $field['className'];
+            $li_class[] = $field['className'];
         }
         
         $html = '<li'.(empty($li_class) ? '' : ' class="'.implode(' ', $li_class).'"').'>';
@@ -660,7 +660,7 @@ class Form extends Plugin
         }
         
         if($field['type'] != 'hidden') {
-        	$html .= '</li>';
+            $html .= '</li>';
         }
 
         return $html;
