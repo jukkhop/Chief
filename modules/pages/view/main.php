@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="span12">
+    <div class="col-xs-12">
         <h1>Hello World!</h1>
         <p>Chief has been successfully installed and you can start doing you magic. Have fun!</p>
         

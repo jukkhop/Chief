@@ -27,17 +27,6 @@ if(!empty($_POST)) {
 	$str .= "define('DEFAULT_MODULE', 'pages');\n";
 	if(empty($errors)) {
 		file_put_contents('system/config.php', $str);
-		if(isset($_POST['remove_bootstrap'])) {
-			if(file_exists('layout/css/bootstrap.min.css')) {
-				unlink('layout/css/bootstrap.min.css');
-			}
-			if(file_exists('layout/js/bootstrap.min.js')) {
-				unlink('layout/js/bootstrap.min.js');
-			}
-			if(file_exists('layout/img/glyphicons-halflings.png')) {
-				unlink('layout/img/glyphicons-halflings.png');
-			}
-		}
 		unlink(__FILE__);
 		header('Location: '.BASE_DIR);
 	}	
@@ -56,10 +45,10 @@ $checklist = array(
 ?><!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta charset="UTF-8">
 	<title>Chief Setup</title>
+	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
 	<link href='//fonts.googleapis.com/css?family=Open+Sans:400|Titillium+Web:400,900,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" href="<?=BASE_DIR?>layout/css/bootstrap.min.css" />
 	<script src="//code.jquery.com/jquery.min.js"></script>
 	<script>
 		$(function() {
@@ -134,51 +123,63 @@ $checklist = array(
 		<?php endforeach; endif; ?>
 		<form method="post" autocomplete="off">
 			<div class="row">
-				<fieldset class="span4">
+				<fieldset class="col-xs-4">
 					<legend>Checklist</legend>
-					<ul class="span3 nav nav-tabs nav-stacked">
+					<div class="nav nav-pills">
 						<?php foreach($checklist as $key => $bool): ?>
-							<li class="disabled warning"><a><i class="icon-<?=$bool?'ok':'remove'?>"></i><?=$key?></a></li>
+							<span class="btn"><i class="glyphicon glyphicon-<?=$bool?'ok':'remove'?>"></i> <?=$key?></a></span>
 						<?php endforeach; ?>
-					</ul>
+					</div>
 				</fieldset>
-				<fieldset class="span4">
+				<fieldset class="col-xs-4">
 					<legend>Database connection</legend>
-					<label class="checkbox">
-						<input type="checkbox" name="no_database" /> I won't need a database
-					</label>
-					<label>Driver</label>
-					<select name="DB_DRIVER">
-						<option value="mysql"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'mysql'?' selected':''?>>MySQL</option>
-						<option value="mariadb"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'mariadb'?' selected':''?>>MariaDB</option>
-						<option value="sqlite"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'sqlite'?' selected':''?>>SQLite</option>
-						<option value="sqlsrv"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'sqlsrv'?' selected':''?>>MSSQL</option>
-					</select>
-					<label>Host</label>
-					<input type="text" name="DB_HOST" value="localhost" value="<?=empty($_POST['DB_HOST'])?'':$_POST['DB_HOST']?>">
-					<label>Database</label>
-					<input type="text" name="DB_DATABASE" value="<?=empty($_POST['DB_DATABASE'])?'':$_POST['DB_DATABASE']?>">
-					<label>Username</label>
-					<input type="text" name="DB_USER" value="<?=empty($_POST['DB_USER'])?'':$_POST['DB_USER']?>">
-					<label>Password</label>
-					<input type="password" name="DB_PASS" value="<?=empty($_POST['DB_PASS'])?'':$_POST['DB_PASS']?>">
+					<div class="form-group">
+						<div class="checkbox">
+						<label>
+							<input type="checkbox" name="no_database" /> I won't need a database
+						</label>
+					</div>
+					<div class="form-group">
+						<label>Driver</label>
+						<select class="form-control" name="DB_DRIVER">
+							<option value="mysql"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'mysql'?' selected':''?>>MySQL</option>
+							<option value="mariadb"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'mariadb'?' selected':''?>>MariaDB</option>
+							<option value="sqlite"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'sqlite'?' selected':''?>>SQLite</option>
+							<option value="sqlsrv"<?=isset($_POST['DB_DRIVER']) && $_POST['DB_DRIVER'] == 'sqlsrv'?' selected':''?>>MSSQL</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Host</label>
+						<input class="form-control" type="text" name="DB_HOST" value="localhost" value="<?=empty($_POST['DB_HOST'])?'':$_POST['DB_HOST']?>">
+					</div>
+					<div class="form-group">
+						<label>Database</label>
+						<input class="form-control" type="text" name="DB_DATABASE" value="<?=empty($_POST['DB_DATABASE'])?'':$_POST['DB_DATABASE']?>">
+					</div>
+					<div class="form-group">
+						<label>Username</label>
+						<input class="form-control" type="text" name="DB_USER" value="<?=empty($_POST['DB_USER'])?'':$_POST['DB_USER']?>">
+					</div>
+					<div class="form-group">
+						<label>Password</label>
+						<input class="form-control" type="password" name="DB_PASS" value="<?=empty($_POST['DB_PASS'])?'':$_POST['DB_PASS']?>">
+					</div>
 				</fieldset>
-				<fieldset class="span4">
+				<fieldset class="col-xs-4">
 					<legend>General options</legend>
-					<label>Timezone</label>
-					<select name="TIMEZONE">
-						<?php foreach(\DateTimeZone::listIdentifiers() as $id): ?>
-							<option value="<?=$id?>"<?=$tz == $id ? ' selected': ''?>><?=$id?></option>
-						<?php endforeach; ?>
-					</select>
-					<label class="checkbox">
-						<input type="checkbox" name="remove_bootstrap" /> Remove Twitter Bootstrap
-					</label>
+					<div class="form-group">
+						<label>Timezone</label>
+						<select class="form-control" name="TIMEZONE">
+							<?php foreach(\DateTimeZone::listIdentifiers() as $id): ?>
+								<option value="<?=$id?>"<?=$tz == $id ? ' selected': ''?>><?=$id?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
 				</fieldset>
 			</div>
 			<div class="row" style="padding-top: 40px;">
 				<div class="span12" style="text-align: center;">
-					<button <?=in_array(false, $checklist) ? ' disabled' : ''?> class="btn <?=in_array(false, $checklist) ? 'disabled' : 'btn-success'?> btn-large">Save</button>
+					<button <?=in_array(false, $checklist) ? ' disabled' : ''?> class="btn <?=in_array(false, $checklist) ? 'disabled' : 'btn-success'?> btn-lg">Save</button>
 				</div>
 			</div>
 		</form>
