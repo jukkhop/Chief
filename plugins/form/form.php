@@ -3,6 +3,7 @@ namespace Chief;
 
 class Form extends Plugin
 {
+
     private $rendered = null;
     private $method = 'post';
     private $action = null;
@@ -12,6 +13,7 @@ class Form extends Plugin
     private $transforms = array();
     private $className;
     private $readOnly;
+    private $printEmptyLabels = true;
 
     private $inlineMode = false;
 
@@ -20,8 +22,7 @@ class Form extends Plugin
 
     public static function escape($str)
     {
-        $str = html_entity_decode($str);
-        return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars(html_entity_decode($str, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
     }
 
     public function __toString()
@@ -68,7 +69,7 @@ class Form extends Plugin
     {
         if(strpos($action, 'http') === false && $action[0] != '/') {
             $action = BASE_DIR.$action;
-        }        
+        }
         $this->action = $action;
         return $this;
     }
@@ -80,7 +81,7 @@ class Form extends Plugin
         foreach($values as $key => $value) {
             $key = $prefix.$key;
             $this->values[is_numeric($key) ? (int)$key : $key] = $value;
-        }        
+        }
         return $this;
     }
 
@@ -93,9 +94,17 @@ class Form extends Plugin
     public function setReadOnly($bool)
     {
         $this->readOnly = !!$bool;
+        return $this;
     }
 
-    private static function flatten($key, $value) {
+    public function setPrintEmptyLabels($bool)
+    {
+        $this->printEmptyLabels = !!$bool;
+        return $this;
+    }
+
+    private static function flatten($key, $value)
+    {
         $return = array();
         foreach($value as $k => $v) {
             $new_key = is_null($key) ? $k : $key.'['.$k.']';
@@ -302,7 +311,7 @@ class Form extends Plugin
             'generator' => function($field) {
                 $disabled = $field['disabled'] ? ' disabled' : '';
                 $readonly = $field['readonly'] ? ' readonly' : '';
-                $checkbox = '<ul>';                
+                $checkbox = '<ul>';
                 if(is_null($field['options'])) {
                     $checked = (int)$field['value'] === 1 || $field['value'] === 'on' ? ' checked="checked"' : '';
                     $checkbox .= sprintf('<li><label><input type="checkbox" name="%s"%s%s%s>%s</label></li>', $field['name'], $checked, $disabled, $readonly, $field['label']);
@@ -393,6 +402,7 @@ class Form extends Plugin
                 $disabled = $field['disabled'] ? ' disabled' : '';
                 $readonly = $field['readonly'] ? ' readonly' : '';
                 return sprintf('<input id="%s" class="btn" type="button" name="%s" value="%s"%s%s>', $field['name'], $field['name'], $field['label'], $disabled, $readonly);
+
             }
         );
         return $this;
@@ -424,7 +434,7 @@ class Form extends Plugin
             'label' => $html,
             'no_label' => true,
             'generator' => function($field) {
-                return $field['label'];
+                return sprintf('<span id="%s">%s</span>', $field['name'], $field['label']);
             }
         );
         return $this;
@@ -452,7 +462,8 @@ class Form extends Plugin
         return $this->updateActiveField('width', $width);
     }
 
-    private function getDataFields() {
+    private function getDataFields()
+    {
         $html = ' ';
         foreach($this->fields[$this->active] as $key => $value) {
             $html .= is_numeric($key) ? 'data-'.$value : 'data-'.$key.'="'.$value.'"';
@@ -479,7 +490,7 @@ class Form extends Plugin
     {
         return $this->updateActiveField('disabled', !!$bool);
     }
-    
+
     public function readonly($bool = true)
     {
         return $this->updateActiveField('readonly', !!$bool);
@@ -552,7 +563,8 @@ class Form extends Plugin
     }
 
     public function render_field($name)
-    {        
+    {
+
         $field_hull = array(
             'name' => null,
             'label' => null,
@@ -566,30 +578,11 @@ class Form extends Plugin
             'info' => null,
             'className' => null
         );
-        
-        $field = array_merge($field_hull, $this->fields[$name]);
-        $error = isset($this->errors[$name]) ? sprintf('<p class="error">%s</p>', $this->errors[$name]) : null;
-        $label = in_array($field['type'], array('submit', 'button', 'custom')) || ($field['type'] == 'checkbox' && is_null($field['options'])) ? null : $field['label'];
-        if(isset($field['no_label']) && $field['no_label']) {
-            $label = null;
-        }
 
-        $li_class = [];
-        if(is_null($label)) {
-            $li_class[] = 'no-label';
-        }
-        
-        if(!empty($error)) {
-            $li_class[] = 'error';
-        }
-        
-        if(isset($field['className'])) {
-            $li_class[] = $field['className'];
-        }
-        
-        $html = '<li'.(empty($li_class) ? '' : ' class="'.implode(' ', $li_class).'"').'>';
+        $html = '';
         $class = array();
 
+        $field = array_merge($field_hull, $this->fields[$name]);
         $value = isset($this->values[$name]) ? $this->values[$name] : null;
 
         if(isset($this->transforms[$name])) {
@@ -600,36 +593,58 @@ class Form extends Plugin
 
         if($field['type'] == 'checkbox' && !empty($field['options'])) {
             $basename = rtrim($field['name'], '[]');
-            $field['name'] = $basename.'[]';            
+            $field['name'] = $basename.'[]';
+
             $_values = array();
             foreach($this->values as $key => $value) {
                 if(preg_match('~^'.preg_quote($basename).'\[(.*?)\]~', $key, $matches)) {
                     $_values[$matches[1]] = $value;
                 }
-            }                        
+            }
+
             $value = $_values;
         }
+
+        $label = in_array($field['type'], array('submit', 'button', 'custom')) || ($field['type'] == 'checkbox' && is_null($field['options'])) ? false : $field['label'];
+
+        if(isset($field['no_label']) && $field['no_label']) {
+            $label = null;
+        }
+
+        $error = isset($this->errors[$name]) ? sprintf('<p class="error">%s</p>', $this->errors[$name]) : null;
+
+        $class[] = 'form-field-'.$field['name'];
+
+        if($field['required']) $class[] = 'required';
+        if(!is_null($error))   $class[] = 'error';
+        if(isset($field['className'])) $class[] = $field['className'];
+
+        $class = empty($class) ? '' : ' class="'.implode(' ', $class).'"';
 
         $field['width'] = isset($field['width']) ? $field['width'] : null;
         $field['value'] = $value;
 
-        $html .= is_null($label) ? '' : sprintf('<label for="%s">%s</label>', $name, $label);
+        $html .= sprintf('<li%s>', $class);
+        if($this->printEmptyLabels || !empty($label)) {
+            $label = !$label ? '&nbsp;' : $label;
+            $html .= is_null($label) ? '' : sprintf('<label for="%s">%s</label>', $name, $label);
+        }
 
         if($field['type'] == 'hidden') {
             $html = '';
         }
-        
+
         $wrap = array_filter([
             isset($field['prepend']) && strip_tags($field['prepend']) == $field['prepend'] ? 'input-prepend' : null,
             isset($field['append']) && strip_tags($field['append']) == $field['append'] ? 'input-append' : null
         ]);
-        
+
         $wrap = empty($wrap) ? false : implode(' ', $wrap);
-        
+
         if($wrap) {
             $html .= '<div class="'.$wrap.'">';
         }
-            
+
         if(isset($field['prepend'])) {
             $html .= sprintf('<span class="add-on prepend">%s</span>', $field['prepend']);
         }
@@ -652,13 +667,12 @@ class Form extends Plugin
         if($wrap) {
             $html .= '</div>';
         }
-        
-        $html .= $error;
-        
+
         if(isset($field['info']) && !empty($field['info'])) {
             $html .= sprintf('<p class="info">%s</p>', $field['info']);
         }
-        
+
+        $html .= $error;
         if($field['type'] != 'hidden') {
             $html .= '</li>';
         }
@@ -667,13 +681,15 @@ class Form extends Plugin
     }
 
     public function render()
-    {        
+    {
+
         $fieldset_open = false;
         $ul_open       = false;
 
         $enctype   = $this->hasFile ? ' enctype="multipart/form-data"' : '';
-        $className = !empty($this->className) ? ' class="'.$this->className.'"' : '';        
+        $className = !empty($this->className) ? ' class="'.$this->className.'"' : '';
         $form      = sprintf('<form%s method="%s" action="%s"%s>', $className, $this->method, $this->formatString($this->action, $this->values), $enctype);
+
         $global_errors_keys = array_diff(array_keys($this->errors), array_keys($this->fields));
 
         if(!empty($global_errors_keys)) {
@@ -716,8 +732,6 @@ class Form extends Plugin
             $field['value'] = $value;
             $form .= $field['generator']($field, $values);
         }
-        
-        $form .= '<ul>';
 
         # Insert visible fields
         foreach($this->fields as $name => $field) {
@@ -726,8 +740,14 @@ class Form extends Plugin
 
             if($field['type'] == 'hidden') continue;
 
-            if($field['type'] == 'fieldset') {                
+            if($field['type'] == 'fieldset') {
+
                 $className = !is_null($field['className']) ? sprintf(' class="%s"', $field['className']) : '';
+
+                if($ul_open) {
+                    $form .= '</ul>';
+                    $ul_open = false;
+                }
 
                 if($fieldset_open) {
                     $form .= '</fieldset>';
@@ -736,24 +756,38 @@ class Form extends Plugin
 
                 $form .= sprintf('<fieldset id="%s"%s>', Common::slug($field['label']), $className);
                 $form .= sprintf('<legend>%s</legend>', $field['label']);
+                $form .= '<ul>';
 
+                $ul_open = true;
                 $fieldset_open = true;
                 continue;
             }
 
             if($field['type'] == 'fieldsetClose' && $fieldset_open) {
+                if($ul_open) {
+                    $form .= '</ul>';
+                    $ul_open = false;
+                }
                 $form .= '</fieldset>';
                 continue;
             }
 
+            if(!$ul_open) {
+                $form .= '<ul>';
+                $ul_open = true;
+            }
+
             $form .= $this->render_field($name);
-        }        
+        }
+
+        if($ul_open) {
+            $form .= '</ul>';
+        }
 
         if($fieldset_open) {
             $form .= '</fieldset>';
         }
 
-        $form .= '</ul>';
         $form .= '</form>';
         $form .= '<div style="clear: both;"></div>';
 
@@ -825,18 +859,20 @@ class Form extends Plugin
 
                     if($error !== false) {
                         $this->errors[$name] = $error;
-                    }                    
-                }                
+                    }
+
+                }
+
             }
 
             if($field['type'] == 'datetime') {
-                if(!empty($this->values[$name]) && !\DateTime::createFromFormat('j.n.Y H:i', trim($this->values[$name]))) {
+                if(!empty($this->values[$name]) && !DateTime::createFromFormat('j.n.Y H:i', trim($this->values[$name]))) {
                     $this->errors[$name] = 'Tarkista päivämäärän muoto.';
                 }
             }
 
             if($field['type'] == 'date') {
-                if(!empty($this->values[$name]) && !\DateTime::createFromFormat('j.n.Y', trim($this->values[$name]))) {
+                if(!empty($this->values[$name]) && !DateTime::createFromFormat('j.n.Y', trim($this->values[$name]))) {
                     $this->errors[$name] = 'Tarkista päivämäärän muoto.';
                 }
             }
@@ -848,7 +884,8 @@ class Form extends Plugin
             if(isset($field['regex']) && isset($this->values[$name]) && preg_match($field['regex'], $this->values[$name]) === 0) {
                 $this->errors[$name] = 'Kentän arvo on väärässä muodossa';
             }
-        }        
+        }
+
         return $this->errors;
     }
 
@@ -878,7 +915,8 @@ class Form extends Plugin
                 }
                 $url = str_replace($var, $replacement, $url);
             }
-        }        
+        }
+
         return $url;
     }
 }
