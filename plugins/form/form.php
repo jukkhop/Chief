@@ -157,7 +157,8 @@ class Form extends Plugin
             'type' => 'hidden',
             'generator' => function($field) {
                 $disabled = $field['disabled'] ? ' disabled' : '';
-                return sprintf('<input type="hidden" name="%s" value="%s"%s>', $field['name'], Form::escape($field['value']), $disabled);
+                $readonly = $field['readonly'] ? ' readonly' : '';
+                return sprintf('<input type="hidden" name="%s" value="%s"%s%s>', $field['name'], Form::escape($field['value']), $disabled, $readonly);
             }
         );
         return $this;
@@ -274,7 +275,8 @@ class Form extends Plugin
                 $disabled = $field['disabled'] ? ' disabled' : '';
                 $readonly = $field['readonly'] ? ' readonly' : '';
                 $width = is_null($field['width']) ? '' : sprintf(' style="width: %s;"', is_numeric($field['width']) ? $field['width'].'px' : $field['width']);
-                $select = sprintf('<select id="%s" name="%s"%s%s%s>', $field['name'], $field['name'], $disabled, $readonly, $width);
+                $multiple = substr($field['name'], -2) == '[]' ? ' multiple' : '';
+                $select = sprintf('<select id="%s" name="%s"%s%s%s%s>', $field['name'], $field['name'], $disabled, $readonly, $width, $multiple);
                 if(is_array($field['options']) && !empty($field['options'])) {
                     foreach($field['options'] as $k => $v) {
                         if($field['no_keys']) $k = $v;
@@ -307,7 +309,7 @@ class Form extends Plugin
                 } elseif(is_array($field['options']) && !empty($field['options'])) {
                     foreach($field['options'] as $k => $v) {
                         if(is_array($field['value'])) {
-                            $checked = in_array($k, $field['value']) ? ' checked="checked"' : '';
+                            $checked = in_array($k, $field['value']) || (isset($field['value'][$k]) && !is_numeric($field['value'][$k])) ? ' checked="checked"' : '';
                         } else {
                             $checked = $k == $field['value'] ? ' checked="checked"' : '';
                         }
@@ -371,9 +373,10 @@ class Form extends Plugin
             'type' => 'textarea',
             'label' => $label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
                 $width = is_null($field['width']) ? '' : sprintf(' style="width: %s;"', is_numeric($field['width']) ? $field['width'].'px' : $field['width']);
-                return sprintf('<textarea class="wysiwyg" id="%s" name="%s"%s%s>%s</textarea>', $field['name'], $field['name'], $width, $disabled, Form::escape($field['value']));
+                return sprintf('<textarea class="wysiwyg" id="%s" name="%s"%s%s%s>%s</textarea>', $field['name'], $field['name'], $width, $disabled, $readonly, Form::escape($field['value']));
             }
         );
         return $this;
@@ -387,8 +390,9 @@ class Form extends Plugin
             'type' => 'button',
             'label' => $label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
-                return sprintf('<input id="%s" class="btn" type="button" name="%s" value="%s"%s />', $field['name'], $field['name'], $field['label'], $disabled);
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
+                return sprintf('<input id="%s" class="btn" type="button" name="%s" value="%s"%s%s>', $field['name'], $field['name'], $field['label'], $disabled, $readonly);
             }
         );
         return $this;
@@ -403,8 +407,9 @@ class Form extends Plugin
             'label' => $label,
             'no_label' => $no_label,
             'generator' => function($field) {
-                $disabled = $field['disabled'] ? ' disabled="disabled"' : '';
-                return sprintf('<input id="%s" class="btn btn-primary" type="submit" name="%s" value="%s"%s />', $field['name'], $field['name'], $field['label'], $disabled);
+                $disabled = $field['disabled'] ? ' disabled' : '';
+                $readonly = $field['readonly'] ? ' readonly' : '';
+                return sprintf('<input id="%s" class="btn btn-primary" type="submit" name="%s" value="%s"%s%s>', $field['name'], $field['name'], $field['label'], $disabled, $readonly);
             }
         );
         return $this;
@@ -474,7 +479,7 @@ class Form extends Plugin
     {
         return $this->updateActiveField('disabled', !!$bool);
     }
-
+    
     public function readonly($bool = true) 
     {
         return $this->updateActiveField('readonly', !!$bool);
@@ -578,7 +583,9 @@ class Form extends Plugin
         	$li_class[] = 'error';
         }
         
-        $li_class[] = $field['type'];
+        if(isset($field['className'])) {
+        	$li_class[] = $field['className'];
+        }
         
         $html = '<li'.(empty($li_class) ? '' : ' class="'.implode(' ', $li_class).'"').'>';
         $class = array();
@@ -652,7 +659,9 @@ class Form extends Plugin
             $html .= sprintf('<p class="info">%s</p>', $field['info']);
         }
         
-        $html .= '</li>';
+        if($field['type'] != 'hidden') {
+        	$html .= '</li>';
+        }
 
         return $html;
     }
@@ -692,6 +701,7 @@ class Form extends Plugin
             'required' => false,
             'width' => null,
             'disabled' => false,
+            'readonly' => false,
             'regex' => null,
             'info' => null,
             'className' => null
@@ -707,6 +717,8 @@ class Form extends Plugin
             $form .= $field['generator']($field, $values);
         }
         
+        $form .= '<ul>';
+
         # Insert visible fields
         foreach($this->fields as $name => $field) {
 
@@ -716,36 +728,32 @@ class Form extends Plugin
 
             if($field['type'] == 'fieldset') {                
                 $className = !is_null($field['className']) ? sprintf(' class="%s"', $field['className']) : '';
+
                 if($fieldset_open) {
-                    $form .= '</ul></fieldset>';
+                    $form .= '</fieldset>';
+                    $fieldset_open = false;
                 }
-                if($ul_open) {
-                	$form .= '</ul>';
-                }
+
                 $form .= sprintf('<fieldset id="%s"%s>', Common::slug($field['label']), $className);
-                $form .= sprintf('<span class="legend">%s</span><ul>', $field['label']);
+                $form .= sprintf('<legend>%s</legend>', $field['label']);
+
                 $fieldset_open = true;
-				$ul_open = true;
                 continue;
-            } else if($field['type'] == 'fieldsetClose' && $fieldset_open) {
-                $form .= '</ul></fieldset>';
-				$ul_open = false;
+            }
+
+            if($field['type'] == 'fieldsetClose' && $fieldset_open) {
+                $form .= '</fieldset>';
                 continue;
-            } else {
-            	if(!$ul_open) {
-            		$form .= '<ul>';
-            		$ul_open = true;
-            	}
             }
 
             $form .= $this->render_field($name);
-        }
-        
-        $form .= '</ul>';
+        }        
+
         if($fieldset_open) {
             $form .= '</fieldset>';
         }
 
+        $form .= '</ul>';
         $form .= '</form>';
         $form .= '<div style="clear: both;"></div>';
 
@@ -828,7 +836,7 @@ class Form extends Plugin
             }
 
             if($field['type'] == 'date') {
-                if(!empty($this->values[$name]) && !\DateTime::createFromFormat('j.n.Y', $this->values[$name])) {
+                if(!empty($this->values[$name]) && !\DateTime::createFromFormat('j.n.Y', trim($this->values[$name]))) {
                     $this->errors[$name] = 'Tarkista päivämäärän muoto.';
                 }
             }
