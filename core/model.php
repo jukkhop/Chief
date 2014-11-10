@@ -9,6 +9,8 @@ class Model extends Core
     {        
         if(strpos($model, '/') !== false) {
             list($module, $model) = explode('/', $model);
+        } else {
+            $module = $model;
         }
 
         $model = str_replace('_model', '', $model);
