@@ -12,7 +12,7 @@ class Model extends Core
         }
 
         $model = str_replace('_model', '', $model);
-        $path  = strtolower(sprintf('modules/%s/model/%s_model.php', $model, $model));
+        $path  = strtolower(sprintf('modules/%s/model/%s_model.php', $module, $model));
 
         if(file_exists($path)) {
             require_once($path);
